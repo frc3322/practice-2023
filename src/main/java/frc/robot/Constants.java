@@ -20,9 +20,9 @@ public final class Constants {
 
   public static final class CAN {
     // Drivetrain motors
-    public static final int FL = 0;
-    public static final int FR = 0;
-    public static final int BL = 0;
-    public static final int BR = 0;
+    public static final int FL = 11;
+    public static final int FR = 4;
+    public static final int BL = 3;
+    public static final int BR = 2;
   }
 }
