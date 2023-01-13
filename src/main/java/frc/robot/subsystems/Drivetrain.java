@@ -10,15 +10,14 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants;
+import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
-public class Drivetrain extends SubsystemBase {
+public class Drivetrain extends SubsystemBase implements Loggable {
   public final CANSparkMax motorFR = new CANSparkMax(Constants.CAN.FR, MotorType.kBrushless);
   public final CANSparkMax motorFL = new CANSparkMax(Constants.CAN.FL, MotorType.kBrushless);
   public final CANSparkMax motorBR = new CANSparkMax(Constants.CAN.BR, MotorType.kBrushless);
@@ -27,8 +26,8 @@ public class Drivetrain extends SubsystemBase {
   private final SlewRateLimiter accelLimit = new SlewRateLimiter(1.5);
   private final SlewRateLimiter turnLimit = new SlewRateLimiter(1.5);
 
-  
-  @Log double speedy = -999999;
+  // create double for logging the controller input
+  @Log double speedLog = -2;
 
   /** Creates a new ExampleSubsystem. */
   public Drivetrain() {
@@ -46,8 +45,6 @@ public class Drivetrain extends SubsystemBase {
     motorFL.burnFlash();
     motorBR.burnFlash();
     motorBL.burnFlash();
-
-    //Shuffleboard.getTab("Tab 7").addNumber("hiiiiii", null);
   }
 
   /**
@@ -63,9 +60,9 @@ public class Drivetrain extends SubsystemBase {
           /* one-time action goes here */
         });
   }
-  public void drive(double speed, double turn){
+  public void drive(double speed, double turn) {
 
-    this.speedy = speed;
+    this.speedLog = speed;
 
     turn += Math.pow(turn, 3);
     speed *= .75;
@@ -85,7 +82,6 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
-    speedy += 1;
   }
 
   @Override

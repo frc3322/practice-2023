@@ -4,13 +4,12 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.Drivetrain;
 import io.github.oblarg.oblog.Logger;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -25,13 +24,12 @@ public class RobotContainer {
   private final Drivetrain drivetrain = new Drivetrain();
   
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final XboxController driverController = new XboxController(0);
 
     private final Command driveCommand = new RunCommand(
       () -> {
-        double speed = MathUtil.applyDeadband(-driverController.getRightX(), 0.09);
-        double turn = MathUtil.applyDeadband(-driverController.getLeftY(), 0.08);
+        double speed = MathUtil.applyDeadband(driverController.getLeftY(), 0.09);
+        double turn = MathUtil.applyDeadband(driverController.getRightX(), 0.08);
         drivetrain.drive(speed, turn);
       }
       , drivetrain);
