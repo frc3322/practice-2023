@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants;
+import io.github.oblarg.oblog.annotations.Log;
 
 public class Drivetrain extends SubsystemBase {
   public final CANSparkMax motorFR = new CANSparkMax(Constants.CAN.FR, MotorType.kBrushless);
@@ -21,12 +22,15 @@ public class Drivetrain extends SubsystemBase {
   public final CANSparkMax motorBR = new CANSparkMax(Constants.CAN.BR, MotorType.kBrushless);
   public final CANSparkMax motorBL = new CANSparkMax(Constants.CAN.BL, MotorType.kBrushless);
   private final DifferentialDrive robotDrive = new DifferentialDrive(motorFL, motorFR);
-  private final SlewRateLimiter accelLimit = new SlewRateLimiter(1.2);
-  private final SlewRateLimiter turnLimit = new SlewRateLimiter(1.2);
+  private final SlewRateLimiter accelLimit = new SlewRateLimiter(1.5);
+  private final SlewRateLimiter turnLimit = new SlewRateLimiter(1.5);
+
+  @Log
+  double speed;
 
   /** Creates a new ExampleSubsystem. */
   public Drivetrain() {
-    motorFR.setInverted(true);
+    motorFL.setInverted(true);
     motorBR.follow(motorFR);
     motorBL.follow(motorFL);
 
@@ -56,9 +60,12 @@ public class Drivetrain extends SubsystemBase {
         });
   }
   public void drive(double speed, double turn){
+
+    this.speed = speed;
+
     turn += Math.pow(turn, 3);
-    turn *= .5;
-    robotDrive.curvatureDrive(accelLimit.calculate(speed), turnLimit.calculate(turn), speed<0.04);
+    speed *= .75;
+    robotDrive.arcadeDrive(accelLimit.calculate(speed), turnLimit.calculate(turn));
     robotDrive.feed();
   }
 
@@ -74,7 +81,6 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
   }
 
   @Override

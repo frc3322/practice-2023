@@ -6,9 +6,11 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.Drivetrain;
+import io.github.oblarg.oblog.Logger;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -28,16 +30,16 @@ public class RobotContainer {
 
     private final Command driveCommand = new RunCommand(
       () -> {
-        double left = MathUtil.applyDeadband(driverController.getLeftY(), 0.09);
-        double right = MathUtil.applyDeadband(-driverController.getLeftX(), 0.08);
-        drivetrain.drive(left, right);
+        double speed = MathUtil.applyDeadband(-driverController.getRightX(), 0.09);
+        double turn = MathUtil.applyDeadband(-driverController.getLeftY(), 0.08);
+        drivetrain.drive(speed, turn);
       }
       , drivetrain);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     
-
+    Logger.configureLoggingAndConfig(this, false);
     
     // Configure the trigger bindings
     configureBindings();
@@ -62,7 +64,9 @@ public class RobotContainer {
     // cancelling on release.
     
   }
-
+public void updateLogger(){
+  Logger.updateEntries();
+}
   
 
   /**
