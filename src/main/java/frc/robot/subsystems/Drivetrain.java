@@ -10,6 +10,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -25,8 +27,8 @@ public class Drivetrain extends SubsystemBase {
   private final SlewRateLimiter accelLimit = new SlewRateLimiter(1.5);
   private final SlewRateLimiter turnLimit = new SlewRateLimiter(1.5);
 
-  @Log
-  double speed;
+  
+  @Log double speedy = -999999;
 
   /** Creates a new ExampleSubsystem. */
   public Drivetrain() {
@@ -44,6 +46,8 @@ public class Drivetrain extends SubsystemBase {
     motorFL.burnFlash();
     motorBR.burnFlash();
     motorBL.burnFlash();
+
+    //Shuffleboard.getTab("Tab 7").addNumber("hiiiiii", null);
   }
 
   /**
@@ -61,7 +65,7 @@ public class Drivetrain extends SubsystemBase {
   }
   public void drive(double speed, double turn){
 
-    this.speed = speed;
+    this.speedy = speed;
 
     turn += Math.pow(turn, 3);
     speed *= .75;
@@ -81,6 +85,7 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
+    speedy += 1;
   }
 
   @Override
