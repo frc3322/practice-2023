@@ -17,6 +17,8 @@ import frc.robot.Constants;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
+import com.kauailabs.navx.frc.AHRS;;
+
 public class Drivetrain extends SubsystemBase implements Loggable {
   public final CANSparkMax motorFR = new CANSparkMax(Constants.CAN.FR, MotorType.kBrushless);
   public final CANSparkMax motorFL = new CANSparkMax(Constants.CAN.FL, MotorType.kBrushless);
@@ -26,8 +28,14 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   private final SlewRateLimiter accelLimit = new SlewRateLimiter(1.5);
   private final SlewRateLimiter turnLimit = new SlewRateLimiter(1.5);
 
+  // Create gyro
+  private final AHRS gyro = new AHRS();
+
+  // Create double for logging the yaw of the robot
+  @Log double yaw = -999;
+
   // create double for logging the controller input
-  @Log double speedLog = -2;
+  @Log double speed = -2;
 
   /** Creates a new ExampleSubsystem. */
   public Drivetrain() {
@@ -62,7 +70,7 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   }
   public void drive(double speed, double turn) {
 
-    this.speedLog = speed;
+    this.speed = speed;
 
     turn += Math.pow(turn, 3);
     speed *= .75;
@@ -82,6 +90,7 @@ public class Drivetrain extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
+    yaw = gyro.getRotation2d().getDegrees();
   }
 
   @Override
