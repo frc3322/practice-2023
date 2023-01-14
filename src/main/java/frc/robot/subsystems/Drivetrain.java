@@ -17,25 +17,24 @@ import frc.robot.Constants;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
-import com.kauailabs.navx.frc.AHRS;
-
 public class Drivetrain extends SubsystemBase implements Loggable {
   public final CANSparkMax motorFR = new CANSparkMax(Constants.CAN.FR, MotorType.kBrushless);
   public final CANSparkMax motorFL = new CANSparkMax(Constants.CAN.FL, MotorType.kBrushless);
   public final CANSparkMax motorBR = new CANSparkMax(Constants.CAN.BR, MotorType.kBrushless);
   public final CANSparkMax motorBL = new CANSparkMax(Constants.CAN.BL, MotorType.kBrushless);
   private final DifferentialDrive robotDrive = new DifferentialDrive(motorFL, motorFR);
-  private final SlewRateLimiter accelLimit = new SlewRateLimiter(1.5);
-  private final SlewRateLimiter turnLimit = new SlewRateLimiter(1.5);
+  private final SlewRateLimiter accelLimit = new SlewRateLimiter(1.2);
+  private final SlewRateLimiter turnLimit = new SlewRateLimiter(2);
 
   // Create gyro
-  private final AHRS gyro = new AHRS();
+  //private final AHRS gyro = new AHRS();
 
   // Create double for logging the yaw of the robot
-  @Log double yaw = -999;
+  //@Log double yaw = -999;
 
   // create double for logging the controller input
   @Log double speed = -2;
+  @Log double turn = -2;
 
   /** Creates a new ExampleSubsystem. */
   public Drivetrain() {
@@ -69,12 +68,13 @@ public class Drivetrain extends SubsystemBase implements Loggable {
         });
   }
   public void drive(double speed, double turn) {
+    //turn = 0.5 * turn + 0.5 * Math.pow(turn, 3);  // Weird math
 
     this.speed = speed;
+    this.turn = turn;
 
-    turn += Math.pow(turn, 3);
-    speed *= .75;
-    robotDrive.arcadeDrive(accelLimit.calculate(speed), turnLimit.calculate(turn));
+    robotDrive.arcadeDrive(turnLimit.calculate(turn), accelLimit.calculate(speed), false);
+
     robotDrive.feed();
   }
 
@@ -90,7 +90,7 @@ public class Drivetrain extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-    yaw = gyro.getRotation2d().getDegrees();
+    //yaw = gyro.getRotation2d().getDegrees();
   }
 
   @Override
