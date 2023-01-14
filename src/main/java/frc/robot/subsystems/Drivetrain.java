@@ -17,7 +17,7 @@ import frc.robot.Constants;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
-import com.kauailabs.navx.frc.AHRS;;
+import com.kauailabs.navx.frc.AHRS;
 
 public class Drivetrain extends SubsystemBase implements Loggable {
   public final CANSparkMax motorFR = new CANSparkMax(Constants.CAN.FR, MotorType.kBrushless);
