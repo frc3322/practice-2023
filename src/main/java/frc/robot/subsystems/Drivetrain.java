@@ -38,10 +38,10 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   NetworkTable limelightTable = inst.getTable("limelight");
 
   // Create gyro
-  private final AHRS gyro = new AHRS();
+  // private final AHRS gyro = new AHRS();
 
   // Create double for logging the yaw of the robot
-  @Log private double heading = -999;
+  // @Log private double heading = -999;
 
   // create double for logging the controller input
   @Log private double speed = -2;
@@ -113,7 +113,7 @@ public class Drivetrain extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-    heading = getHeading();
+    // heading = getHeading();
   }
 
   @Override
@@ -121,7 +121,7 @@ public class Drivetrain extends SubsystemBase implements Loggable {
     // This method will be called once per scheduler run during simulation
   }
 
-  public double getHeading() {
-    return gyro.getRotation2d().getDegrees();
-  }
+  // public double getHeading() {
+  //   return gyro.getRotation2d().getDegrees();
+  // }
 }
