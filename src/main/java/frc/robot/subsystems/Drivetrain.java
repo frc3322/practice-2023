@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -27,10 +28,10 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   private final SlewRateLimiter turnLimit = new SlewRateLimiter(2);
 
   // Create gyro
-  //private final AHRS gyro = new AHRS();
+  private final AHRS gyro = new AHRS();
 
   // Create double for logging the yaw of the robot
-  //@Log double yaw = -999;
+  @Log double yaw = -999;
 
   // create double for logging the controller input
   @Log double speed = -2;
@@ -90,7 +91,7 @@ public class Drivetrain extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-    //yaw = gyro.getRotation2d().getDegrees();
+    yaw = gyro.getRotation2d().getDegrees();
   }
 
   @Override
