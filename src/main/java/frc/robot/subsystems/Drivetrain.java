@@ -31,11 +31,11 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   private final AHRS gyro = new AHRS();
 
   // Create double for logging the yaw of the robot
-  @Log double yaw = -999;
+  @Log private double heading = -999;
 
   // create double for logging the controller input
-  @Log double speed = -2;
-  @Log double turn = -2;
+  @Log private double speed = -2;
+  @Log private double turn = -2;
 
   /** Creates a new ExampleSubsystem. */
   public Drivetrain() {
@@ -91,11 +91,15 @@ public class Drivetrain extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-    yaw = gyro.getRotation2d().getDegrees();
+    heading = getHeading();
   }
 
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
+  }
+
+  public double getHeading() {
+    return gyro.getRotation2d().getDegrees();
   }
 }
