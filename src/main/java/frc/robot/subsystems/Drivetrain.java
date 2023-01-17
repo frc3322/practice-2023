@@ -9,6 +9,8 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,9 +24,17 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   public final CANSparkMax motorFL = new CANSparkMax(Constants.CAN.FL, MotorType.kBrushless);
   public final CANSparkMax motorBR = new CANSparkMax(Constants.CAN.BR, MotorType.kBrushless);
   public final CANSparkMax motorBL = new CANSparkMax(Constants.CAN.BL, MotorType.kBrushless);
+  
   private final DifferentialDrive robotDrive = new DifferentialDrive(motorFL, motorFR);
+  
   private final SlewRateLimiter accelLimit = new SlewRateLimiter(1.2);
   private final SlewRateLimiter turnLimit = new SlewRateLimiter(2);
+
+  //gets the default instance of NetworkTables that is automatically created
+  NetworkTableInstance inst = NetworkTableInstance.getDefault();
+  
+  //gets the limelight table where data is stored from the limelight
+  NetworkTable limelightTable = inst.getTable("limelight");
 
   // Create gyro
   //private final AHRS gyro = new AHRS();
@@ -77,6 +87,18 @@ public class Drivetrain extends SubsystemBase implements Loggable {
 
     robotDrive.feed();
   }
+
+  // Limelight Functions Start
+
+  public void setPipeline(int pipelineNum){
+    limelightTable
+      //gets the "pipeline" entry from the limelight table
+      .getEntry("pipeline")
+      //sets the value of the pipeline entry to the parameter of the function
+      .setNumber(pipelineNum);
+  }
+
+  // Limelight Functions End
 
   /**
    * An example method querying a boolean state of the subsystem (for example, a digital sensor).
