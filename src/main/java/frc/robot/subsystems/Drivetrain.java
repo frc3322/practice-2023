@@ -50,6 +50,7 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   /** Creates a new ExampleSubsystem. */
   public Drivetrain() {
     motorFL.setInverted(true);
+    motorFR.setInverted(false);
     motorBR.follow(motorFR);
     motorBL.follow(motorFL);
 
