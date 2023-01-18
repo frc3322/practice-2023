@@ -9,6 +9,7 @@ import io.github.oblarg.oblog.Logger;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -24,7 +25,7 @@ public class RobotContainer {
   private final Drivetrain drivetrain = new Drivetrain();
   
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final XboxController driverController = new XboxController(0);
+  private final CommandXboxController driverController = new CommandXboxController(0);
 
     private final Command driveCommand = new RunCommand(
       () -> {
@@ -56,7 +57,18 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    
+   
+    driverController.a().whileTrue(new InstantCommand(
+      () -> {
+        drivetrain.setPipeline(0);
+      }
+    ));
+
+    driverController.b().whileTrue(new InstantCommand(
+      () -> {
+        drivetrain.setPipeline(1);
+      }
+    ));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
