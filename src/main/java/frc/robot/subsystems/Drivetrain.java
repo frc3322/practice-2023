@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SPI;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -33,18 +35,17 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   private final SlewRateLimiter accelLimit = new SlewRateLimiter(1.2);
   private final SlewRateLimiter turnLimit = new SlewRateLimiter(2);
 
-  //gets the default instance of NetworkTables that is automatically created
+  // This gets the default instance of NetworkTables that is automatically created.
   NetworkTableInstance inst = NetworkTableInstance.getDefault();
   
-  //gets the limelight table where data is stored from the limelight
+  // This gets the limelight table where data is stored from the limelight.
   NetworkTable limelightTable = inst.getTable("limelight");
-
-
+  
   // Create gyro
-  // private final AHRS gyro = new AHRS();
+  private final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
   // Create double for logging the yaw of the robot
-  // @Log private double heading = -999;
+  @Log private double heading = -999;
 
   // create double for logging the controller input
   @Log private double speed = -2;
@@ -117,7 +118,7 @@ public class Drivetrain extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-    // heading = getHeading();
+    heading = getHeading();
   }
 
   @Override
@@ -125,7 +126,7 @@ public class Drivetrain extends SubsystemBase implements Loggable {
     // This method will be called once per scheduler run during simulation
   }
 
-  // public double getHeading() {
-  //   return gyro.getRotation2d().getDegrees();
-  // }
+  public double getHeading() {
+    return gyro.getRotation2d().getDegrees();
+  }
 }
