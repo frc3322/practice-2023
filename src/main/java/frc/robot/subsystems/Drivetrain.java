@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
 
@@ -22,10 +24,12 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants;
 import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
 
 public class Drivetrain extends SubsystemBase implements Loggable {
@@ -67,6 +71,20 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   @Log private double BLENCValue;
   @Log private double BRENCValue; 
 
+  private double distanceSetpoint;
+  private double dP;
+  private double dI;
+  private double dD;
+
+  @Config
+  public void tuneDistancePID(double set, double p, double i, double d){
+    distanceSetpoint = set;
+    dP = p;
+    dI = i;
+    dD = d;
+  }
+
+
   /** Creates a new ExampleSubsystem. */
   public Drivetrain() {
     motorFL.setInverted(true);
@@ -75,6 +93,7 @@ public class Drivetrain extends SubsystemBase implements Loggable {
     motorBL.follow(motorFL);
 
     SmartDashboard.putData("Reset Gyro", new InstantCommand(() -> {gyro.reset();}, this));
+    SmartDashboard.putData("drive to distance", getDriveEncDistanceCommandFL(distanceSetpoint, dP, dI, dD));
 
     motorFR.setIdleMode(IdleMode.kBrake);
     motorFL.setIdleMode(IdleMode.kBrake);
@@ -87,19 +106,25 @@ public class Drivetrain extends SubsystemBase implements Loggable {
     motorBL.burnFlash();
   }
 
-  /**
-   * Example command factory method.
-   *
-   * @return a command
-   */
-  public CommandBase exampleMethodCommand() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-        });
+  
+  @Override
+  public void periodic() {
+    pitch = getPitch();
+    roll = getRoll();
+    yaw = getYaw();
+
+    FLENCValue = FLEncoder.getPosition();
+    FRENCValue = FREncoder.getPosition();
+    BLENCValue = BLEncoder.getPosition();
+    BRENCValue = BREncoder.getPosition();
+
   }
+
+  @Override
+  public void simulationPeriodic() {
+    // This method will be called once per scheduler run during simulation
+  }
+
   public void drive(double speed, double turn) {
     //turn = 0.5 * turn + 0.5 * Math.pow(turn, 3);  // Weird math
 
@@ -123,34 +148,6 @@ public class Drivetrain extends SubsystemBase implements Loggable {
 
   // Limelight Functions End
 
-  /**
-   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
-   *
-   * @return value of some boolean subsystem state, such as a digital sensor.
-   */
-  public boolean exampleCondition() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
-  }
-
-  @Override
-  public void periodic() {
-    pitch = getPitch();
-    roll = getRoll();
-    yaw = getYaw();
-
-    FLENCValue = FLEncoder.getPosition();
-    FRENCValue = FREncoder.getPosition();
-    BLENCValue = BLEncoder.getPosition();
-    BRENCValue = BREncoder.getPosition();
-
-  }
-
-  @Override
-  public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
-  }
-
   public double getPitch(){
     return gyro.getPitch();
   }
@@ -167,5 +164,11 @@ public class Drivetrain extends SubsystemBase implements Loggable {
     return new InstantCommand(() -> {
       gyro.reset();
     }, this);
+  }
+  
+  public PIDCommand getDriveEncDistanceCommandFL(double setpoint, double P, double I, double D){
+    PIDCommand c  =  new PIDCommand(new PIDController(P, I, D), FLEncoder::getPosition, setpoint, (output) -> motorFL.setVoltage(output));
+    c.getController().setTolerance(5);
+    return c;
   }
 }

@@ -8,18 +8,33 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
+import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Config;
 
 /** A command that will turn the robot to the specified angle. */
-public class TurnToAngle extends PIDCommand {
+public class TurnToAngle extends PIDCommand implements Loggable{
   /**
    * Turns to robot to the specified angle.
    *
    * @param targetAngleDegrees The angle to turn to
    * @param drive The drive subsystem to use
+   * 
    */
+
+    static double p;
+    static double i;
+    static double d;
+
+   @Config
+   public void tuneTTA(double newP, double newI, double newD){
+    p = newP;
+    i = newI;
+    d = newD;
+   }
+
   public TurnToAngle(double targetAngleDegrees, Drivetrain drive) {
     super(
-        new PIDController(DriveConstants.kTurnP, DriveConstants.kTurnI, DriveConstants.kTurnD),
+        new PIDController(p, i, d),
         // Close loop on heading
         drive::getYaw,
         // Set reference to target
