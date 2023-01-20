@@ -11,13 +11,16 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants;
@@ -58,6 +61,7 @@ public class Drivetrain extends SubsystemBase implements Loggable {
     motorBR.follow(motorFR);
     motorBL.follow(motorFL);
 
+    SmartDashboard.putData("Reset Gyro", new InstantCommand(() -> {gyro.reset();}, this));
 
     motorFR.setIdleMode(IdleMode.kBrake);
     motorFL.setIdleMode(IdleMode.kBrake);
@@ -128,5 +132,11 @@ public class Drivetrain extends SubsystemBase implements Loggable {
 
   public double getHeading() {
     return gyro.getRotation2d().getDegrees();
+  }
+
+  public InstantCommand resetGyro() {
+    return new InstantCommand(() -> {
+      gyro.reset();
+    }, this);
   }
 }

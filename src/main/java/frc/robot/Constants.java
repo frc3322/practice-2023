@@ -15,7 +15,14 @@ package frc.robot;
 public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
-  
+  }
+
+  public static final class DriveConstants {
+    public static final double kTurnP = 0.001;
+    public static final double kTurnI = 0;
+    public static final double kTurnD = 0;
+    public static final double kTurnToleranceDeg = 5;
+    public static final double kTurnRateToleranceDegPerS = 10;
   }
 
   public static final class CAN {

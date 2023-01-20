@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.commands.TurnToAngle;
 import frc.robot.subsystems.Drivetrain;
 import io.github.oblarg.oblog.Logger;
 import edu.wpi.first.math.MathUtil;
@@ -69,6 +70,7 @@ public class RobotContainer {
         drivetrain.setPipeline(1);
       }
     ));
+    driverController.y().onTrue(new TurnToAngle(90, drivetrain).withTimeout(5));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
