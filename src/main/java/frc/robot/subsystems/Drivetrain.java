@@ -8,6 +8,7 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -32,7 +33,12 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   public final CANSparkMax motorFL = new CANSparkMax(Constants.CAN.FL, MotorType.kBrushless);
   public final CANSparkMax motorBR = new CANSparkMax(Constants.CAN.BR, MotorType.kBrushless);
   public final CANSparkMax motorBL = new CANSparkMax(Constants.CAN.BL, MotorType.kBrushless);
-  
+ 
+  public final RelativeEncoder FLEncoder = motorFL.getEncoder();
+  public final RelativeEncoder FREncoder = motorFR.getEncoder();
+  public final RelativeEncoder BLEncoder = motorBL.getEncoder();
+  public final RelativeEncoder BREncoder = motorBR.getEncoder();
+
   private final DifferentialDrive robotDrive = new DifferentialDrive(motorFL, motorFR);
   
   private final SlewRateLimiter accelLimit = new SlewRateLimiter(1.2);
@@ -48,11 +54,18 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   private final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
   // Create double for logging the yaw of the robot
-  @Log private double heading = -999;
+  @Log private double pitch = 0;
+  @Log private double roll = 0;
+  @Log private double yaw = 0;
 
   // create double for logging the controller input
   @Log private double speed = -2;
   @Log private double turn = -2;
+
+  @Log private double FLENCValue;
+  @Log private double FRENCValue;
+  @Log private double BLENCValue;
+  @Log private double BRENCValue; 
 
   /** Creates a new ExampleSubsystem. */
   public Drivetrain() {
@@ -122,7 +135,15 @@ public class Drivetrain extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-    heading = getHeading();
+    pitch = getPitch();
+    roll = getRoll();
+    yaw = getYaw();
+
+    FLENCValue = FLEncoder.getPosition();
+    FRENCValue = FREncoder.getPosition();
+    BLENCValue = BLEncoder.getPosition();
+    BRENCValue = BREncoder.getPosition();
+
   }
 
   @Override
@@ -130,8 +151,16 @@ public class Drivetrain extends SubsystemBase implements Loggable {
     // This method will be called once per scheduler run during simulation
   }
 
-  public double getHeading() {
-    return gyro.getRotation2d().getDegrees();
+  public double getPitch(){
+    return gyro.getPitch();
+  }
+
+  public double getRoll(){
+    return gyro.getRoll();
+  }
+  
+  public double getYaw() {
+    return gyro.getYaw();
   }
 
   public InstantCommand resetGyro() {
