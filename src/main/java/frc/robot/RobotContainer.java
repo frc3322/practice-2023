@@ -6,6 +6,7 @@ package frc.robot;
 
 //import frc.robot.commands.TurnToAngle;
 import frc.robot.subsystems.Drivetrain;
+import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.Logger;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
@@ -21,7 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
-public class RobotContainer {
+public class RobotContainer implements Loggable{
   // The robot's subsystems and commands are defined here...
   private final Drivetrain drivetrain = new Drivetrain();
   
