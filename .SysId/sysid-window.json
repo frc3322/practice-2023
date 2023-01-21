@@ -13,7 +13,7 @@
   "Window": {
     "###Analyzer": {
       "Collapsed": "0",
-      "Pos": "320,25",
+      "Pos": "327,-15",
       "Size": "360,550"
     },
     "###Generator": {
@@ -23,8 +23,8 @@
     },
     "###Logger": {
       "Collapsed": "0",
-      "Pos": "3,323",
-      "Size": "390,385"
+      "Pos": "5,274",
+      "Size": "390,440"
     },
     "###Program Log": {
       "Collapsed": "0",
@@ -45,6 +45,11 @@
       "Collapsed": "0",
       "Pos": "685,25",
       "Size": "590,690"
+    },
+    "Warning": {
+      "Collapsed": "0",
+      "Pos": "596,12",
+      "Size": "89,695"
     }
   }
 }

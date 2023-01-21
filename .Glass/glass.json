@@ -1,11 +1,5 @@
 {
   "NetworkTables": {
-<<<<<<< HEAD
-=======
-    "Retained Values": {
-      "open": false
-    },
->>>>>>> 2ba30152a311f0b115492cc616d1b7c406896819
     "transitory": {
       "FMSInfo": {
         "open": true
@@ -39,14 +33,11 @@
       "/SmartDashboard/drive to distance": "Command"
     },
     "windows": {
-<<<<<<< HEAD
       "/SmartDashboard/Reset Gyro": {
         "window": {
           "visible": true
         }
       },
-=======
->>>>>>> 2ba30152a311f0b115492cc616d1b7c406896819
       "/SmartDashboard/angle dude": {
         "window": {
           "visible": true

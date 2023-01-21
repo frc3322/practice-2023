@@ -15,19 +15,32 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants;
+import frc.robot.Constants.SysID;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
@@ -58,6 +71,8 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   private final AHRS gyro = new AHRS(SPI.Port.kMXP);
   private final PIDController ddcontrol = new PIDController(.1, 0, 0.01);
   private final PIDController anglecontrol = new PIDController(0.018, 0, 0.0027);
+
+  private final DifferentialDriveOdometry  odometry = new DifferentialDriveOdometry(gyro.getRotation2d(), FLEncoder.getPosition(), FREncoder.getPosition());
 
   // Create double for logging the yaw of the robot
   @Log private double pitch = 0;
@@ -91,6 +106,7 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   //  anglecontrol.setSetpoint(0);
   // }
 
+ 
 
   /** Creates a new ExampleSubsystem. */
   public Drivetrain() {
@@ -113,6 +129,9 @@ public class Drivetrain extends SubsystemBase implements Loggable {
     motorFL.burnFlash();
     motorBR.burnFlash();
     motorBL.burnFlash();
+
+   
+
   }
 
   
@@ -130,6 +149,8 @@ public class Drivetrain extends SubsystemBase implements Loggable {
     BRENCValue = BREncoder.getPosition();
 
     tx = limelightTable.getEntry("tx").getValue().getDouble();
+
+    odometry.update(gyro.getRotation2d(), FLEncoder.getPosition(), FREncoder.getPosition());
   }
 
   @Override
@@ -146,6 +167,14 @@ public class Drivetrain extends SubsystemBase implements Loggable {
     robotDrive.arcadeDrive(accelLimit.calculate(speed), turnLimit.calculate(turn), false);
 
     robotDrive.feed();
+  }
+
+  public Pose2d getPose2d(){
+    return odometry.getPoseMeters();
+  }
+
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    return new DifferentialDriveWheelSpeeds(FLEncoder.getVelocity(), FREncoder.getVelocity());
   }
 
   // Limelight Functions Start
@@ -198,4 +227,13 @@ public class Drivetrain extends SubsystemBase implements Loggable {
     //c.getController().setTolerance(5);
     return c;
   }
+  public void tankDriveVolts(double left, double right){
+    motorFL.setVoltage(left);
+    motorFR.setVoltage(right);
+  }
+
+
+  // public Command getAuto(){
+   
+  // }
 }
