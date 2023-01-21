@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
 
@@ -22,10 +24,12 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants;
 import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
 
 public class Drivetrain extends SubsystemBase implements Loggable {
@@ -52,6 +56,8 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   
   // Create gyro
   private final AHRS gyro = new AHRS(SPI.Port.kMXP);
+  private final PIDController ddcontrol = new PIDController(.1, 0, 0.01);
+  private final PIDController anglecontrol = new PIDController(0.018, 0, 0.0027);
 
   // Create double for logging the yaw of the robot
   @Log private double pitch = 0;
@@ -67,6 +73,22 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   @Log private double BLENCValue;
   @Log private double BRENCValue; 
 
+  @Log private double FLPower;
+
+
+  // @Config
+  // public void tuneDistancePID( double p, double i, double d){
+  //  ddcontrol.setPID(p, i, d);
+  //  ddcontrol.setSetpoint(0);
+  // }
+
+  // @Config
+  // public void tuneAnglePID( double p, double i, double d){
+  //  anglecontrol.setPID(p, i, d);
+  //  anglecontrol.setSetpoint(0);
+  // }
+
+
   /** Creates a new ExampleSubsystem. */
   public Drivetrain() {
     motorFL.setInverted(true);
@@ -75,6 +97,9 @@ public class Drivetrain extends SubsystemBase implements Loggable {
     motorBL.follow(motorFL);
 
     SmartDashboard.putData("Reset Gyro", new InstantCommand(() -> {gyro.reset();}, this));
+    SmartDashboard.putData("drive to distance", getDriveEncDistanceCommandFL());
+    SmartDashboard.putData("angle dude", getAngleCommand());
+
 
     motorFR.setIdleMode(IdleMode.kBrake);
     motorFL.setIdleMode(IdleMode.kBrake);
@@ -87,19 +112,27 @@ public class Drivetrain extends SubsystemBase implements Loggable {
     motorBL.burnFlash();
   }
 
-  /**
-   * Example command factory method.
-   *
-   * @return a command
-   */
-  public CommandBase exampleMethodCommand() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-        });
+  
+  @Override
+  public void periodic() {
+    pitch = getPitch();
+    roll = getRoll();
+    yaw = getYaw();
+
+    FLPower = motorFL.getBusVoltage();
+
+    FLENCValue = FLEncoder.getPosition();
+    FRENCValue = FREncoder.getPosition();
+    BLENCValue = BLEncoder.getPosition();
+    BRENCValue = BREncoder.getPosition();
+
   }
+
+  @Override
+  public void simulationPeriodic() {
+    // This method will be called once per scheduler run during simulation
+  }
+
   public void drive(double speed, double turn) {
     //turn = 0.5 * turn + 0.5 * Math.pow(turn, 3);  // Weird math
 
@@ -123,34 +156,6 @@ public class Drivetrain extends SubsystemBase implements Loggable {
 
   // Limelight Functions End
 
-  /**
-   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
-   *
-   * @return value of some boolean subsystem state, such as a digital sensor.
-   */
-  public boolean exampleCondition() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
-  }
-
-  @Override
-  public void periodic() {
-    pitch = getPitch();
-    roll = getRoll();
-    yaw = getYaw();
-
-    FLENCValue = FLEncoder.getPosition();
-    FRENCValue = FREncoder.getPosition();
-    BLENCValue = BLEncoder.getPosition();
-    BRENCValue = BREncoder.getPosition();
-
-  }
-
-  @Override
-  public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
-  }
-
   public double getPitch(){
     return gyro.getPitch();
   }
@@ -167,5 +172,18 @@ public class Drivetrain extends SubsystemBase implements Loggable {
     return new InstantCommand(() -> {
       gyro.reset();
     }, this);
+  }
+
+  public PIDCommand getAngleCommand(){
+    PIDCommand d  =  new PIDCommand(anglecontrol, this::getYaw, 0, output -> drive(0, output), this);
+    //d.getController().setTolerance(0.0000000);
+    d.getController().enableContinuousInput(-180, 180);
+    return d;
+  }
+  
+  public PIDCommand getDriveEncDistanceCommandFL(){
+    PIDCommand c  =  new PIDCommand(ddcontrol, FLEncoder::getPosition, 0, (output) -> motorFL.set(output));
+    //c.getController().setTolerance(5);
+    return c;
   }
 }
