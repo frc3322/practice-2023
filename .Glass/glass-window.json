@@ -1,0 +1,67 @@
+{
+  "Docking": {
+    "Data": [
+      "DockSpace ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,19 Size=1024,749 CentralNode=1"
+    ]
+  },
+  "MainWindow": {
+    "GLOBAL": {
+      "height": "768",
+      "maximized": "0",
+      "style": "0",
+      "userScale": "2",
+      "width": "1024",
+      "xpos": "502",
+      "ypos": "32"
+    }
+  },
+  "Table": {
+    "0x542B5671,2": {
+      "Column 0  Width": "319",
+      "Column 1  Width": "156",
+      "RefScale": "13"
+    }
+  },
+  "Window": {
+    "###/SmartDashboard/Reset Gyro": {
+      "Collapsed": "0",
+      "Pos": "38,233",
+      "Size": "104,71"
+    },
+    "###/SmartDashboard/angle dude": {
+      "Collapsed": "0",
+      "Pos": "45,142",
+      "Size": "79,71"
+    },
+    "###/SmartDashboard/drive to distance": {
+      "Collapsed": "0",
+      "Pos": "31,60",
+      "Size": "79,71"
+    },
+    "###NetworkTables": {
+      "Collapsed": "0",
+      "Pos": "128,51",
+      "Size": "877,629"
+    },
+    "###NetworkTables Settings": {
+      "Collapsed": "0",
+      "Pos": "200,47",
+      "Size": "329,169"
+    },
+    "###Plot <0>": {
+      "Collapsed": "0",
+      "Pos": "131,468",
+      "Size": "700,451"
+    },
+    "Debug##Default": {
+      "Collapsed": "0",
+      "Pos": "60,60",
+      "Size": "400,400"
+    },
+    "DockSpaceViewport_11111111": {
+      "Collapsed": "0",
+      "Pos": "0,19",
+      "Size": "1024,749"
+    }
+  }
+}
