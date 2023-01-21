@@ -70,7 +70,6 @@ public class RobotContainer {
         drivetrain.setPipeline(1);
       }
     ));
-    driverController.y().onTrue(new TurnToAngle(drivetrain.LimelightHAngleOffset(), drivetrain).withTimeout(5));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
