@@ -113,6 +113,13 @@ public class Drivetrain extends SubsystemBase implements Loggable {
 
   // Limelight Functions Start
 
+  public double LimelightHAngleOffset(){
+    return limelightTable
+      .getEntry("tx")
+      .getValue()
+      .getDouble();
+  }
+  
   public void setPipeline(int pipelineNum){
     limelightTable
       //gets the "pipeline" entry from the limelight table
