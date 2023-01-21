@@ -56,6 +56,8 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   
   // Create gyro
   private final AHRS gyro = new AHRS(SPI.Port.kMXP);
+  private final PIDController ddcontrol = new PIDController(.1, 0, 0.01);
+  private final PIDController anglecontrol = new PIDController(0.018, 0, 0.0027);
 
   // Create double for logging the yaw of the robot
   @Log private double pitch = 0;
@@ -71,18 +73,20 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   @Log private double BLENCValue;
   @Log private double BRENCValue; 
 
-  private double distanceSetpoint;
-  private double dP;
-  private double dI;
-  private double dD;
+  @Log private double FLPower;
 
-  @Config
-  public void tuneDistancePID(double set, double p, double i, double d){
-    distanceSetpoint = set;
-    dP = p;
-    dI = i;
-    dD = d;
-  }
+
+  // @Config
+  // public void tuneDistancePID( double p, double i, double d){
+  //  ddcontrol.setPID(p, i, d);
+  //  ddcontrol.setSetpoint(0);
+  // }
+
+  // @Config
+  // public void tuneAnglePID( double p, double i, double d){
+  //  anglecontrol.setPID(p, i, d);
+  //  anglecontrol.setSetpoint(0);
+  // }
 
 
   /** Creates a new ExampleSubsystem. */
@@ -93,7 +97,9 @@ public class Drivetrain extends SubsystemBase implements Loggable {
     motorBL.follow(motorFL);
 
     SmartDashboard.putData("Reset Gyro", new InstantCommand(() -> {gyro.reset();}, this));
-    SmartDashboard.putData("drive to distance", getDriveEncDistanceCommandFL(distanceSetpoint, dP, dI, dD));
+    SmartDashboard.putData("drive to distance", getDriveEncDistanceCommandFL());
+    SmartDashboard.putData("angle dude", getAngleCommand());
+
 
     motorFR.setIdleMode(IdleMode.kBrake);
     motorFL.setIdleMode(IdleMode.kBrake);
@@ -112,6 +118,8 @@ public class Drivetrain extends SubsystemBase implements Loggable {
     pitch = getPitch();
     roll = getRoll();
     yaw = getYaw();
+
+    FLPower = motorFL.getBusVoltage();
 
     FLENCValue = FLEncoder.getPosition();
     FRENCValue = FREncoder.getPosition();
@@ -165,10 +173,17 @@ public class Drivetrain extends SubsystemBase implements Loggable {
       gyro.reset();
     }, this);
   }
+
+  public PIDCommand getAngleCommand(){
+    PIDCommand d  =  new PIDCommand(anglecontrol, this::getYaw, 0, output -> drive(0, output), this);
+    //d.getController().setTolerance(0.0000000);
+    d.getController().enableContinuousInput(-180, 180);
+    return d;
+  }
   
-  public PIDCommand getDriveEncDistanceCommandFL(double setpoint, double P, double I, double D){
-    PIDCommand c  =  new PIDCommand(new PIDController(P, I, D), FLEncoder::getPosition, setpoint, (output) -> motorFL.setVoltage(output));
-    c.getController().setTolerance(5);
+  public PIDCommand getDriveEncDistanceCommandFL(){
+    PIDCommand c  =  new PIDCommand(ddcontrol, FLEncoder::getPosition, 0, (output) -> motorFL.set(output));
+    //c.getController().setTolerance(5);
     return c;
   }
 }

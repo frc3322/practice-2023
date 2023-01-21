@@ -2,6 +2,8 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+//unused
+
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -10,6 +12,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
+import io.github.oblarg.oblog.annotations.Log;
 
 /** A command that will turn the robot to the specified angle. */
 public class TurnToAngle extends PIDCommand implements Loggable{
@@ -20,21 +23,14 @@ public class TurnToAngle extends PIDCommand implements Loggable{
    * @param drive The drive subsystem to use
    * 
    */
+@Config static PIDController acontroller = new PIDController(0.02, 0, 0.001);
 
-    static double p;
-    static double i;
-    static double d;
 
-   @Config
-   public void tuneTTA(double newP, double newI, double newD){
-    p = newP;
-    i = newI;
-    d = newD;
-   }
 
   public TurnToAngle(double targetAngleDegrees, Drivetrain drive) {
     super(
-        new PIDController(p, i, d),
+
+      acontroller,
         // Close loop on heading
         drive::getYaw,
         // Set reference to target
