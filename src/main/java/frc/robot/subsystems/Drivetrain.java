@@ -41,6 +41,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants;
 import frc.robot.Constants.SysID;
+import frc.robot.commands.TurnToAngle;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
@@ -70,7 +71,6 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   // Create gyro
   private final AHRS gyro = new AHRS(SPI.Port.kMXP);
   private final PIDController ddcontrol = new PIDController(.1, 0, 0.01);
-  private final PIDController anglecontrol = new PIDController(0.018, 0, 0.0027);
 
   private final DifferentialDriveOdometry  odometry = new DifferentialDriveOdometry(gyro.getRotation2d(), FLEncoder.getPosition(), FREncoder.getPosition());
 
@@ -117,7 +117,6 @@ public class Drivetrain extends SubsystemBase implements Loggable {
 
     SmartDashboard.putData("Reset Gyro", new InstantCommand(() -> {gyro.reset();}, this));
     SmartDashboard.putData("drive to distance", getDriveEncDistanceCommandFL(0));
-    SmartDashboard.putData("angle dude", getAngleCommand(20));
 
 
     motorFR.setIdleMode(IdleMode.kBrake);
@@ -212,21 +211,24 @@ public class Drivetrain extends SubsystemBase implements Loggable {
       gyro.reset();
     }, this);
   }
-
-  public PIDCommand getAngleCommand(double setpoint){
-    
-   
-    PIDCommand d  =  new PIDCommand(anglecontrol, this::getYaw, setpoint, output -> drive(0, output), this);
-    //d.getController().setTolerance(0.0000000);
-    d.getController().enableContinuousInput(-180, 180);
-    return d;
-  }
   
   public PIDCommand getDriveEncDistanceCommandFL(double setpoint){
     PIDCommand c  =  new PIDCommand(ddcontrol, FLEncoder::getPosition, setpoint, (output) -> motorFL.set(output));
     //c.getController().setTolerance(5);
     return c;
   }
+  // public PIDCommand getDriveEncDistanceCommandFR(double setpoint){
+  //   PIDCommand c  =  new PIDCommand(ddcontrol, FREncoder::getPosition, setpoint, (output) -> motorFR.set(output));
+  //   //c.getController().setTolerance(5);
+  //   return c;
+  // }
+  // public void getDriveEncDistanceCommand(double setpoint){
+  //   PIDCommand rightCommand  =  new PIDCommand(ddcontrol, FREncoder::getPosition, setpoint, (output) -> motorFR.set(output));
+  //   PIDCommand leftCommand  =  new PIDCommand(ddcontrol, FLEncoder::getPosition, setpoint, (output) -> motorFL.set(output));
+  //   rightCommand.execute();
+  //   leftCommand.execute();
+  // }
+
   public void tankDriveVolts(double left, double right){
     motorFL.setVoltage(left);
     motorFR.setVoltage(right);

@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.SysID;
+import frc.robot.commands.TurnToAngle;
 //import frc.robot.commands.TurnToAngle;
 import frc.robot.subsystems.Drivetrain;
 import io.github.oblarg.oblog.Loggable;
@@ -84,8 +85,8 @@ public class RobotContainer implements Loggable{
     ));
 
     driverController.y().onTrue(
-        drivetrain.getAngleCommand(drivetrain.getYaw() + drivetrain.GetTX())
-  
+        new TurnToAngle(90, drivetrain)
+          .withTimeout(3)
     );
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,

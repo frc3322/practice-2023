@@ -18,12 +18,11 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
-
   public static final class DriveConstants {
-    public static final double kTurnP = 0.001;
+    public static final double kTurnP = 0.03;
     public static final double kTurnI = 0;
-    public static final double kTurnD = 0;
-    public static final double kTurnToleranceDeg = 5;
+    public static final double kTurnD = 0.0075;
+    public static final double kTurnToleranceDeg = 0.05;
     public static final double kTurnRateToleranceDegPerS = 10;
   }
 
