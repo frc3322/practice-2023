@@ -8,6 +8,7 @@ import frc.robot.Constants.SysID;
 import frc.robot.commands.TurnToAngle;
 //import frc.robot.commands.TurnToAngle;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.TestMotor;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.Logger;
 import edu.wpi.first.math.MathUtil;
@@ -25,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -37,6 +39,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer implements Loggable{
   // The robot's subsystems and commands are defined here...
   private final Drivetrain drivetrain = new Drivetrain();
+  private final TestMotor testMotor = new TestMotor();
   
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driverController = new CommandXboxController(0);
@@ -87,6 +90,14 @@ public class RobotContainer implements Loggable{
     driverController.y().onTrue(
         new TurnToAngle(90, drivetrain)
           .withTimeout(3)
+    );
+    driverController.x().whileTrue(new StartEndCommand(
+      () -> {
+        testMotor.setPower(0.02);
+      }, 
+      () -> {
+        testMotor.setPower(0);
+      }, testMotor)
     );
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
