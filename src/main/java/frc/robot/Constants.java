@@ -33,6 +33,8 @@ public final class Constants {
     public static final int FR = 3;
     public static final int BL = 4;
     public static final int BR = 11;
+    //test Motor
+    public static final int testMotor = 8;
   }
 
   public static final class SysID{
@@ -50,6 +52,8 @@ public final class Constants {
 
     public static final double kRamseteB = 2;
     public static final double kRamseteZeta = 0.7;
+
+
     
 
   }
