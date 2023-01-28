@@ -10,9 +10,10 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
-public class TestMotor extends SubsystemBase {
+public class TestMotor extends SubsystemBase implements Loggable {
   final CANSparkMax testMotor = new CANSparkMax(Constants.CAN.testMotor, MotorType.kBrushless);
 
   // Create Encoders
@@ -30,6 +31,10 @@ public class TestMotor extends SubsystemBase {
     // This method will be called once per scheduler run
     encoderPosition = testMotor_ENC.getPosition();
     
+  }
+
+  public void setPower(double power) {
+    testMotor.set(power);
   }
 
 }
