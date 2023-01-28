@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.SysID;
+import frc.robot.commands.DriveToDistance;
 import frc.robot.commands.TurnToAngle;
 //import frc.robot.commands.TurnToAngle;
 import frc.robot.subsystems.Drivetrain;
@@ -90,6 +91,10 @@ public class RobotContainer implements Loggable{
     driverController.y().onTrue(
         new TurnToAngle(90, drivetrain)
           .withTimeout(3)
+    );
+    driverController.rightBumper().onTrue(
+      new DriveToDistance(5, drivetrain)
+        .withTimeout(5)
     );
     driverController.x().whileTrue(new StartEndCommand(
       () -> {

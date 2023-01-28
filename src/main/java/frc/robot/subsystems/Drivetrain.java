@@ -183,6 +183,10 @@ public class Drivetrain extends SubsystemBase implements Loggable {
     return tx;
   }
 
+  public double getDistance() {
+    return FREncoder.getPosition();
+  }
+
   public void setPipeline(int pipelineNum){
     limelightTable
       //gets the "pipeline" entry from the limelight table
@@ -192,6 +196,7 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   }
 
   // Limelight Functions End
+
 
   public double getPitch(){
     return gyro.getPitch();
