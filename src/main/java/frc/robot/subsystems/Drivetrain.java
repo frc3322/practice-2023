@@ -91,6 +91,8 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   @Log private double FLPower;
 
   @Log double tx; 
+
+  @Log double driveToDistanceOutput;
   
 
 
@@ -119,17 +121,15 @@ public class Drivetrain extends SubsystemBase implements Loggable {
     SmartDashboard.putData("drive to distance", getDriveEncDistanceCommandFL(0));
 
 
-    motorFR.setIdleMode(IdleMode.kBrake);
-    motorFL.setIdleMode(IdleMode.kBrake);
-    motorBR.setIdleMode(IdleMode.kBrake);
-    motorBL.setIdleMode(IdleMode.kBrake);
+    motorFR.setIdleMode(IdleMode.kCoast);
+    motorFL.setIdleMode(IdleMode.kCoast);
+    motorBR.setIdleMode(IdleMode.kCoast);
+    motorBL.setIdleMode(IdleMode.kCoast);
 
     motorFR.burnFlash();
     motorFL.burnFlash();
     motorBR.burnFlash();
     motorBL.burnFlash();
-
-   
 
   }
 
@@ -150,6 +150,10 @@ public class Drivetrain extends SubsystemBase implements Loggable {
     tx = limelightTable.getEntry("tx").getValue().getDouble();
 
     odometry.update(gyro.getRotation2d(), FLEncoder.getPosition(), FREncoder.getPosition());
+  }
+
+  public void updateOutputLog(double output) {
+    driveToDistanceOutput = output;
   }
 
   @Override
@@ -185,6 +189,13 @@ public class Drivetrain extends SubsystemBase implements Loggable {
 
   public double getDistance() {
     return FREncoder.getPosition();
+  }
+
+  public void resetEncoders() {
+    FREncoder.setPosition(0);
+    FLEncoder.setPosition(0);
+    BREncoder.setPosition(0);
+    BLEncoder.setPosition(0);
   }
 
   public void setPipeline(int pipelineNum){

@@ -16,21 +16,23 @@ import frc.robot.subsystems.Drivetrain;
 public class DriveToDistance extends PIDCommand {
   
   public DriveToDistance(double targetDistance, Drivetrain drive) {
+
     super(
       new PIDController(DriveConstants.kDriveP, DriveConstants.kDriveI, DriveConstants.kDriveD),
         // Close loop on heading
         drive::getDistance,
         // Set reference to target
-        drive.getDistance() + targetDistance,
+        drive.getDistance() + (targetDistance * DriveConstants.encoderTicsPerFoot),
         // Pipe output to turn robot
-        output -> drive.drive(output, 0),
+        output -> drive.updateOutputLog(output),
         // Require the drive
         drive);
-    
+
     SmartDashboard.putData("Distance Controller", getController());
     
 
-    // Set the controller to be continuous (because it is an angle controller)
+    // Set the controller to be continuous
+    // DO NOT REMOVE THIS LINE //
     getController().enableContinuousInput(0, 60);
     
     // Set the controller tolerance - the delta tolerance ensures the robot is stationary at the

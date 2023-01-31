@@ -93,13 +93,18 @@ public class RobotContainer implements Loggable{
           .withTimeout(3)
     );
     driverController.rightBumper().onTrue(
-      new DriveToDistance(5, drivetrain)
+      new DriveToDistance(20, drivetrain)
         .withTimeout(5)
     );
+    driverController.leftBumper().onTrue(new InstantCommand(
+      () -> {
+        drivetrain.resetEncoders();
+      }
+    ));
     driverController.x().whileTrue(new StartEndCommand(
       () -> {
         testMotor.setPower(0.02);
-      }, 
+      },
       () -> {
         testMotor.setPower(0);
       }, testMotor)
