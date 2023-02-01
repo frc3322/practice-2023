@@ -12,6 +12,10 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.TestMotor;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.Logger;
+
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
@@ -119,40 +123,51 @@ public void updateLogger(){
 }
   
    public Command getAutonomousCommand() {
-//     var autoVoltageConstraint =
-//       new DifferentialDriveVoltageConstraint(
-//         new SimpleMotorFeedforward(SysID.ks, SysID.kv,SysID.ka), SysID.kDriveKinematics, 10);
+    var autoVoltageConstraint =
+      new DifferentialDriveVoltageConstraint(
+        new SimpleMotorFeedforward(SysID.ks, SysID.kv,SysID.ka), SysID.kDriveKinematics, 10);
 
-//         TrajectoryConfig config =
-//         new TrajectoryConfig(
-//                 SysID.MaxSpeed,
-//                 SysID.MaxAcceleration)
-//             // Add kinematics to ensure max speed is actually obeyed
-//             .setKinematics(SysID.kDriveKinematics)
-//             // Apply the voltage constraint
-//             .addConstraint(autoVoltageConstraint);
+        TrajectoryConfig config =
+        new TrajectoryConfig(
+                SysID.MaxSpeed,
+                SysID.MaxAcceleration)
+            // Add kinematics to ensure max speed is actually obeyed
+            .setKinematics(SysID.kDriveKinematics)
+            // Apply the voltage constraint
+            .addConstraint(autoVoltageConstraint);
 
-//     Trajectory tr = 
-//     TrajectoryGenerator.generateTrajectory(new Pose2d(0,0,new Rotation2d(0)),null , new Pose2d(0,1,new Rotation2d(0)), null);
-//     RamseteCommand ramseteCommand =
-//     new RamseteCommand(
-//         tr,
-//         drivetrain::getPose,
-//         new RamseteController(SysID.kRamseteB, SysID.kRamseteZeta),
-//         new SimpleMotorFeedforward(
-//             SysID.ks,
-//             SysID.kv,
-//             SysID.ka),
-//         SysID.kDriveKinematics,
-//         drivetrain::getWheelSpeeds,
-//         new PIDController(SysID.kp, 0, 0),
-//         new PIDController(SysID.kp, 0, 0),
-//        (double left, double right) -> drivetrain.tankDriveVolts
-//       ,
-//         drivetrain);
+    Trajectory tr = 
+    TrajectoryGenerator.generateTrajectory(new Pose2d(0,0,new Rotation2d(0)),null , new Pose2d(0,1,new Rotation2d(0)), null);
+   
+    BiConsumer<Double, Double>  bc= (l, r) -> {drivetrain.tankDriveVolts(l, r);};
+    Supplier<Pose2d> sup = () -> {return drivetrain.getPose2d();};
+    final PIDController rightramsete = new PIDController(0.1, 0, 0);
+    final PIDController leftramsete = new PIDController(.1, 0, 0.01);
+   
+    RamseteCommand ramseteCommand =
+    new RamseteCommand(tr, 
+        sup, 
+        new RamseteController(SysID.kRamseteB, SysID.kRamseteZeta), 
+        new SimpleMotorFeedforward(
+          SysID.ks,
+          SysID.kv,
+          SysID.ka),
+        SysID.kDriveKinematics, 
+        drivetrain::getWheelSpeeds, 
+        leftramsete, 
+        rightramsete, 
+        bc,
+         drivetrain
+       );
+   
 
-// // Reset odometry to the starting pose of the trajectory.
-// drivetrain.resetOdometry(tr.getInitialPose());
+       
+
+
+        
+
+// Reset odometry to the starting pose of the trajectory.
+drivetrain.resetOdometry(tr.getInitialPose());
 
 // Run path following command, then stop at the end.
 return null;
