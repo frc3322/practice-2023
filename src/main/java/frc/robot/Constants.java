@@ -64,5 +64,11 @@ public final class Constants {
   public static final class I2CConst{
     public static final int COMMAND_REGISTER_BIT = 0x80;
     public static final int MULTI_BYTE_BIT= 0x20;
+
+    public static final int CDATA_REGISTER = 0x14;
+    public static final int RDATA_REGISTER = 0x16;
+    public static final int GDATA_REGISTER = 0x18;
+    public static final int BDATA_REGISTER = 0x1A;
+    public static final int PDATA_REGISTER = 0x1C;
   }
 }

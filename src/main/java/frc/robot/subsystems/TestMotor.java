@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -29,7 +32,15 @@ public class TestMotor extends SubsystemBase implements Loggable {
   // Creates PID
   public final PIDController encoderToPosition = new PIDController(0, 0, 0);
 
-  
+  //Creates colorSensor
+  I2C colorSensor;
+
+  //Color sensor values
+  @Log int cData;
+  @Log int rData;
+  @Log int gData;
+  @Log int bData;
+  @Log int pData;
 
   // Gets Encoder Value
   @Log double encoderPosition = 0; 
@@ -39,7 +50,7 @@ public class TestMotor extends SubsystemBase implements Loggable {
     SmartDashboard.putData("Encoder To Position", getEncoderCommand(encoderToPosition.getSetpoint()));
     SmartDashboard.putData("encoderToPosition", encoderToPosition);
 
-    I2C colorSensor = new I2C(I2C.Port.kOnboard, 0x39);
+    colorSensor = new I2C(I2C.Port.kOnboard, 0x39);
 
     colorSensor.write(I2CConst.COMMAND_REGISTER_BIT | 0x00, 0b00000011);
   }
@@ -48,12 +59,26 @@ public class TestMotor extends SubsystemBase implements Loggable {
   public void periodic() {
     // This method will be called once per scheduler run
     getEncoderPosition();
-    
+
+    cData = readWordRegister(I2CConst.CDATA_REGISTER);
+    rData = readWordRegister(I2CConst.RDATA_REGISTER);
+    gData = readWordRegister(I2CConst.GDATA_REGISTER);
+    bData = readWordRegister(I2CConst.BDATA_REGISTER);
+    pData = readWordRegister(I2CConst.PDATA_REGISTER);
   }
 
   public double getEncoderPosition() {
     encoderPosition = testMotor_ENC.getPosition();
     return encoderPosition;
+  }
+
+  public int readWordRegister(int address){
+    //Creates a ByteBuffer of size 2
+    ByteBuffer buf = ByteBuffer.allocate(2);
+    //Reads color sensor. 
+    colorSensor.read(I2CConst.COMMAND_REGISTER_BIT | I2CConst.MULTI_BYTE_BIT | address, 2, buf);
+    buf.order(ByteOrder.LITTLE_ENDIAN);
+    return buf.getShort(0);
   }
 
   public void setPower(double power) {
