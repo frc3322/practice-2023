@@ -65,10 +65,15 @@ public final class Constants {
     public static final int COMMAND_REGISTER_BIT = 0x80;
     public static final int MULTI_BYTE_BIT= 0x20;
 
+    //clear byte address
     public static final int CDATA_REGISTER = 0x14;
+    //red byte address
     public static final int RDATA_REGISTER = 0x16;
+    //green byte address
     public static final int GDATA_REGISTER = 0x18;
+    //blue byte address
     public static final int BDATA_REGISTER = 0x1A;
+    //proximity byte adress
     public static final int PDATA_REGISTER = 0x1C;
   }
 }

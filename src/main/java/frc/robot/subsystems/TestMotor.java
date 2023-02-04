@@ -77,7 +77,9 @@ public class TestMotor extends SubsystemBase implements Loggable {
     ByteBuffer buf = ByteBuffer.allocate(2);
     //Reads color sensor. 
     colorSensor.read(I2CConst.COMMAND_REGISTER_BIT | I2CConst.MULTI_BYTE_BIT | address, 2, buf);
+    //orders bytes  from low to high
     buf.order(ByteOrder.LITTLE_ENDIAN);
+    //returns 2 bytes after paramter position (all of the bytes in this situation)
     return buf.getShort(0);
   }
 
