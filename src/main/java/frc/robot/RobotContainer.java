@@ -125,7 +125,7 @@ public void updateLogger(){
    public Command getAutonomousCommand() {
     var autoVoltageConstraint =
       new DifferentialDriveVoltageConstraint(
-        new SimpleMotorFeedforward(SysID.ks, SysID.kv,SysID.ka), SysID.kDriveKinematics, 10);
+        new SimpleMotorFeedforward(SysID.ks, SysID.kv,SysID.ka), SysID.kDriveKinematics,7);
 
         TrajectoryConfig config =
         new TrajectoryConfig(
@@ -137,12 +137,12 @@ public void updateLogger(){
             .addConstraint(autoVoltageConstraint);
 
     Trajectory tr = 
-    TrajectoryGenerator.generateTrajectory(new Pose2d(0,0,new Rotation2d(0)),null , new Pose2d(0,1,new Rotation2d(0)), null);
+    TrajectoryGenerator.generateTrajectory(new Pose2d(0,0,new Rotation2d(0)),null , new Pose2d(0,1,new Rotation2d(0)), config);
    
     BiConsumer<Double, Double>  bc= (l, r) -> {drivetrain.tankDriveVolts(l, r);};
     Supplier<Pose2d> sup = () -> {return drivetrain.getPose2d();};
-    final PIDController rightramsete = new PIDController(0.1, 0, 0);
-    final PIDController leftramsete = new PIDController(.1, 0, 0.01);
+    final PIDController rightramsete = new PIDController(SysID.kp, 0, 0);
+    final PIDController leftramsete = new PIDController(SysID.kp, 0, 0.01);
    
     RamseteCommand ramseteCommand =
     new RamseteCommand(tr, 
