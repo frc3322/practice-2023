@@ -59,9 +59,10 @@ public final class Constants {
 
     public static final double kRamseteB = 2;
     public static final double kRamseteZeta = 0.7;
+  }
 
-
-    
-
+  public static final class I2CConst{
+    public static final int COMMAND_REGISTER_BIT = 0x80;
+    public static final int MULTI_BYTE_BIT= 0x20;
   }
 }

@@ -12,9 +12,11 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.I2CConst;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class TestMotor extends SubsystemBase implements Loggable {
@@ -36,6 +38,10 @@ public class TestMotor extends SubsystemBase implements Loggable {
   public TestMotor() {
     SmartDashboard.putData("Encoder To Position", getEncoderCommand(encoderToPosition.getSetpoint()));
     SmartDashboard.putData("encoderToPosition", encoderToPosition);
+
+    I2C colorSensor = new I2C(I2C.Port.kOnboard, 0x39);
+
+    colorSensor.write(I2CConst.COMMAND_REGISTER_BIT | 0x00, 0b00000011);
   }
 
   @Override
