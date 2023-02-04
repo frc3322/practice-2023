@@ -84,6 +84,7 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   // Create gyro
   private final AHRS gyro = new AHRS(SPI.Port.kMXP);
   private final PIDController ddcontrol = new PIDController(.1, 0, 0.01);
+ 
 
   private final DifferentialDriveOdometry  odometry = new DifferentialDriveOdometry(gyro.getRotation2d(), FLEncoder.getPosition(), FREncoder.getPosition());
 
@@ -278,6 +279,10 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   public void tankDriveVolts(double left, double right){
     motorFL.setVoltage(left);
     motorFR.setVoltage(right);
+  }
+
+
+  public void resetOdometry(Pose2d initialPose) {
   }
 
 
