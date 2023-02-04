@@ -232,12 +232,14 @@ public class Drivetrain extends SubsystemBase implements Loggable {
 
   public void updatePose(){
     roboPoseXYZRPY = limelightTable.getEntry("botpose").getValue().getDoubleArray();
-    roboPoseX = roboPoseXYZRPY[0];
-    roboPoseY = roboPoseXYZRPY[1];
-    roboPoseZ = roboPoseXYZRPY[2];
-    roboPoseRoll = roboPoseXYZRPY[3];
-    roboPosePitch = roboPoseXYZRPY[4];
-    roboPoseYaw = roboPoseXYZRPY[5];
+    if(roboPoseXYZRPY.length > 0){
+      roboPoseX = roboPoseXYZRPY[0];
+      roboPoseY = roboPoseXYZRPY[1];
+      roboPoseZ = roboPoseXYZRPY[2];
+      roboPoseRoll = roboPoseXYZRPY[3];
+      roboPosePitch = roboPoseXYZRPY[4];
+      roboPoseYaw = roboPoseXYZRPY[5];
+    }
   }
 
   public double getPitch(){
