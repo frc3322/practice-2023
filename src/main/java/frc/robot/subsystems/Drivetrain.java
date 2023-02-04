@@ -68,6 +68,19 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   // This gets the limelight table where data is stored from the limelight.
   NetworkTable limelightTable = inst.getTable("limelight");
   
+  //Array
+  @Log double[] roboPoseXYZRPY;
+  @Log double roboPoseX;
+  @Log double roboPoseY;
+  @Log double roboPoseZ;
+  @Log double roboPoseRoll;
+  @Log double roboPosePitch;
+  @Log double roboPoseYaw;
+  @Log double tid;
+  // Array of the target apriltag in the coordinate system of the robot(robot perspective of apriltag)
+  @Log double[] targetPose_robotSpace;
+  // Array of the robot in the coordinate system of the target apriltag (apriltag perspective of robot)
+  @Log double[] botPose_targetSpace;
   // Create gyro
   private final AHRS gyro = new AHRS(SPI.Port.kMXP);
   private final PIDController ddcontrol = new PIDController(.1, 0, 0.01);
@@ -119,6 +132,7 @@ public class Drivetrain extends SubsystemBase implements Loggable {
 
     SmartDashboard.putData("Reset Gyro", new InstantCommand(() -> {gyro.reset();}, this));
     SmartDashboard.putData("drive to distance", getDriveEncDistanceCommandFL(0));
+    
 
 
     motorFR.setIdleMode(IdleMode.kCoast);
@@ -131,6 +145,7 @@ public class Drivetrain extends SubsystemBase implements Loggable {
     motorBR.burnFlash();
     motorBL.burnFlash();
 
+
   }
 
   
@@ -141,6 +156,12 @@ public class Drivetrain extends SubsystemBase implements Loggable {
     yaw = getYaw();
 
     FLPower = motorFL.getBusVoltage();
+
+    updatePose();
+
+    tid = limelightTable.getEntry("tid").getValue().getDouble();
+    //targetPose_robotSpace = limelightTable.getEntry("targetpose_robotspace").getValue().getDoubleArray();
+    // botPose_targetSpace = limelightTable.getEntry("botpose_targetspace").getValue().getDoubleArray();
 
     FLENCValue = FLEncoder.getPosition();
     FRENCValue = FREncoder.getPosition();
@@ -208,6 +229,15 @@ public class Drivetrain extends SubsystemBase implements Loggable {
 
   // Limelight Functions End
 
+  public void updatePose(){
+    roboPoseXYZRPY = limelightTable.getEntry("botpose").getValue().getDoubleArray();
+    roboPoseX = roboPoseXYZRPY[0];
+    roboPoseY = roboPoseXYZRPY[1];
+    roboPoseZ = roboPoseXYZRPY[2];
+    roboPoseRoll = roboPoseXYZRPY[3];
+    roboPosePitch = roboPoseXYZRPY[4];
+    roboPoseYaw = roboPoseXYZRPY[5];
+  }
 
   public double getPitch(){
     return gyro.getPitch();
