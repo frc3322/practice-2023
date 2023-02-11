@@ -69,18 +69,18 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   NetworkTable limelightTable = inst.getTable("limelight");
   
   //Array
-  @Log double[] roboPoseXYZRPY;
-  @Log double roboPoseX;
-  @Log double roboPoseY;
-  @Log double roboPoseZ;
-  @Log double roboPoseRoll;
-  @Log double roboPosePitch;
-  @Log double roboPoseYaw;
-  @Log double tid;
+  //@Log double[] roboPoseXYZRPY;
+  //@Log double roboPoseX;
+  //@Log double roboPoseY;
+  //@Log double roboPoseZ;
+  //@Log double roboPoseRoll;
+  //@Log double roboPosePitch;
+  //@Log double roboPoseYaw;
+  //@Log double tid;
   // Array of the target apriltag in the coordinate system of the robot(robot perspective of apriltag)
-  @Log double[] targetPose_robotSpace;
+  //@Log double[] targetPose_robotSpace;
   // Array of the robot in the coordinate system of the target apriltag (apriltag perspective of robot)
-  @Log double[] botPose_targetSpace;
+ // @Log double[] botPose_targetSpace;
   // Create gyro
   private final AHRS gyro = new AHRS(SPI.Port.kMXP);
   private final PIDController ddcontrol = new PIDController(.1, 0, 0.01);
@@ -160,7 +160,7 @@ public class Drivetrain extends SubsystemBase implements Loggable {
 
     updatePose();
 
-    tid = limelightTable.getEntry("tid").getValue().getDouble();
+    //tid = limelightTable.getEntry("tid").getValue().getDouble();
     //targetPose_robotSpace = limelightTable.getEntry("targetpose_robotspace").getValue().getDoubleArray();
     // botPose_targetSpace = limelightTable.getEntry("botpose_targetspace").getValue().getDoubleArray();
 
@@ -169,7 +169,7 @@ public class Drivetrain extends SubsystemBase implements Loggable {
     BLENCValue = BLEncoder.getPosition();
     BRENCValue = BREncoder.getPosition();
 
-    tx = limelightTable.getEntry("tx").getValue().getDouble();
+    //tx = limelightTable.getEntry("tx").getValue().getDouble();
 
     odometry.update(gyro.getRotation2d(), FLEncoder.getPosition(), FREncoder.getPosition());
   }
@@ -231,15 +231,15 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   // Limelight Functions End
 
   public void updatePose(){
-    roboPoseXYZRPY = limelightTable.getEntry("botpose").getValue().getDoubleArray();
-    if(roboPoseXYZRPY.length > 0){
-      roboPoseX = roboPoseXYZRPY[0];
-      roboPoseY = roboPoseXYZRPY[1];
-      roboPoseZ = roboPoseXYZRPY[2];
-      roboPoseRoll = roboPoseXYZRPY[3];
-      roboPosePitch = roboPoseXYZRPY[4];
-      roboPoseYaw = roboPoseXYZRPY[5];
-    }
+    // roboPoseXYZRPY = limelightTable.getEntry("botpose").getValue().getDoubleArray();
+    // if(roboPoseXYZRPY.length > 0){
+    //   roboPoseX = roboPoseXYZRPY[0];
+    //   roboPoseY = roboPoseXYZRPY[1];
+    //   roboPoseZ = roboPoseXYZRPY[2];
+    //   roboPoseRoll = roboPoseXYZRPY[3];
+    //   roboPosePitch = roboPoseXYZRPY[4];
+    //   roboPoseYaw = roboPoseXYZRPY[5];
+    //}
   }
 
   public double getPitch(){

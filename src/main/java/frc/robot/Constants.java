@@ -45,13 +45,17 @@ public final class Constants {
   }
 
   public static final class SysID{
-    public static final double ks = -0.31008;
-    public static final double kv = 4.9366;
-    public static final double ka = 7.5013;
+    //public static final double ks = 0.31008;
+    public static final double ks = 0.1474;
+    //public static final double kv = 4.9366;
+    public static final double kv = 2.4;
+    //public static final double ka = 7.5013;
+    public static final double ka = 0.68337;
+
     public static final double kp = 0.018;
 
     public static final double MaxSpeed = 3;
-    public static final double MaxAcceleration = 1;
+    public static final double MaxAcceleration = 2;
 
     public static final double trackwidth = .9372;
     public static final DifferentialDriveKinematics kDriveKinematics =
