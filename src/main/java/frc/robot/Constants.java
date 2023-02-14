@@ -43,6 +43,10 @@ public final class Constants {
     //test Motor
     public static final int testMotor = 8;
   }
+  public static final class PWM {
+    public static final int S1 = 8;
+    public static final int S2 = 9;
+  }
 
   public static final class SysID{
     //public static final double ks = 0.31008;

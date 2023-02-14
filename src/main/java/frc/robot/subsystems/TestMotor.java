@@ -20,11 +20,18 @@ import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.Servo;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class TestMotor extends SubsystemBase implements Loggable {
   
   final CANSparkMax testMotor = new CANSparkMax(Constants.CAN.testMotor, MotorType.kBrushless);
+  final Servo newContinuousServo = new Servo(Constants.PWM.S1);
+  final Servo newServo =  new Servo(Constants.PWM.S2);
+
+  int servoCounter = 0;
+  int servoContinuousCounter = 0;
 
   // Create Encoders
   private final RelativeEncoder testMotor_ENC = testMotor.getEncoder();
@@ -66,6 +73,52 @@ public class TestMotor extends SubsystemBase implements Loggable {
     bData = readWordRegister(I2CConst.BDATA_REGISTER);
     pData = readWordRegister(I2CConst.PDATA_REGISTER);
   }
+    public void testContinuousServo(){
+      //(sets to 0, then to 1, then back to 0 using degrees and whole values to check that they are same)
+      if (servoContinuousCounter==0){
+        newContinuousServo.set(0);
+        servoContinuousCounter+=1;
+      }
+      else if (servoContinuousCounter==1){
+        newContinuousServo.setAngle(180);
+        servoContinuousCounter+=1;
+      }
+      else if (servoContinuousCounter==2){
+        newContinuousServo.setAngle(0);
+        servoContinuousCounter+=1;
+      }
+      else if (servoContinuousCounter==3){
+        newContinuousServo.set(1.0);
+        servoContinuousCounter+=1;
+      }
+      else if (servoContinuousCounter==4){
+        //set 0 does not stop, must use setAngle(90) to stop
+        newContinuousServo.setAngle(90);
+        servoContinuousCounter=0;
+      }
+
+    }
+    public void testServo(){
+      //(sets to 0, then to 1, then back to 0 using degrees and whole values to check that they are same)
+      if (servoCounter==0){
+        newServo.set(0);
+        servoCounter=1;
+      }
+      else if (servoCounter==1){
+        newServo.setAngle(180);
+        servoCounter=2;
+      }
+      else if (servoCounter==2){
+        newServo.setAngle(0);
+        servoCounter=3;
+      }
+      else if (servoCounter==3){
+        newServo.set(1.0);
+        servoCounter=0;
+        
+      }
+
+    }
 
   public double getEncoderPosition() {
     encoderPosition = testMotor_ENC.getPosition();

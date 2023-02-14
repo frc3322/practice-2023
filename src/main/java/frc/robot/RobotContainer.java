@@ -118,6 +118,14 @@ public class RobotContainer implements Loggable {
         () -> {
           testMotor.setPower(0);
         }, testMotor));
+    driverController.povDown().onTrue(new InstantCommand(
+      () -> {
+        testMotor.testServo();
+      }));
+    driverController.povUp().onTrue(new InstantCommand(
+      () -> {
+        testMotor.testContinuousServo();
+      }));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed,
