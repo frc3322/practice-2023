@@ -14,8 +14,10 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
+import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -31,6 +33,8 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -47,6 +51,9 @@ import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
 
 public class Drivetrain extends SubsystemBase implements Loggable {
+
+  private Field2d fieldSim = new Field2d();
+
   public final CANSparkMax motorFR = new CANSparkMax(Constants.CAN.FR, MotorType.kBrushless);
   public final CANSparkMax motorFL = new CANSparkMax(Constants.CAN.FL, MotorType.kBrushless);
   public final CANSparkMax motorBR = new CANSparkMax(Constants.CAN.BR, MotorType.kBrushless);
@@ -56,6 +63,9 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   public final RelativeEncoder FREncoder = motorFR.getEncoder();
   public final RelativeEncoder BLEncoder = motorBL.getEncoder();
   public final RelativeEncoder BREncoder = motorBR.getEncoder();
+
+  private DifferentialDrivetrainSim drivetrainSimulator;
+  private SimDouble gyroSim;
 
   private final DifferentialDrive robotDrive = new DifferentialDrive(motorFL, motorFR);
   
@@ -82,6 +92,7 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   // Array of the robot in the coordinate system of the target apriltag (apriltag perspective of robot)
  // @Log double[] botPose_targetSpace;
   // Create gyro
+
   private final AHRS gyro = new AHRS(SPI.Port.kMXP);
   private final PIDController ddcontrol = new PIDController(.1, 0, 0.01);
  
@@ -146,6 +157,8 @@ public class Drivetrain extends SubsystemBase implements Loggable {
     motorBR.burnFlash();
     motorBL.burnFlash();
 
+    SmartDashboard.putData("Field", fieldSim);
+
 
   }
 
@@ -159,6 +172,8 @@ public class Drivetrain extends SubsystemBase implements Loggable {
     FLPower = motorFL.getBusVoltage();
 
     updatePose();
+
+    odometry.update(new Rotation2d(getYaw()), FLENCValue, FRENCValue);
 
     //tid = limelightTable.getEntry("tid").getValue().getDouble();
     //targetPose_robotSpace = limelightTable.getEntry("targetpose_robotspace").getValue().getDoubleArray();
@@ -181,6 +196,7 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
+    fieldSim.setRobotPose(getPose2d());
   }
 
   public void drive(double speed, double turn) {
@@ -287,6 +303,9 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   public void resetOdometry(Pose2d initialPose) {
   }
 
+  public void putTrajOnFieldWidget(Trajectory trajectory, String label) {
+    fieldSim.getObject(label).setTrajectory(trajectory);
+  }
 
   // public Command getAuto(){
    

@@ -147,6 +147,8 @@ public class RobotContainer implements Loggable {
     Trajectory tr = TrajectoryGenerator.generateTrajectory(new Pose2d(0, 0, new Rotation2d(0)), waypoints,
         new Pose2d(0, 1, new Rotation2d(0)), config);
 
+    drivetrain.putTrajOnFieldWidget(tr, "trajectory");
+
     BiConsumer<Double, Double> bc = (l, r) -> {
       drivetrain.tankDriveVolts(l, r);
     };

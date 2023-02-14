@@ -1,0 +1,21 @@
+{
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Angle Controller": "PIDController",
+      "/SmartDashboard/Distance Controller": "PIDController",
+      "/SmartDashboard/Encoder To Position": "Command",
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Reset Gyro": "Command",
+      "/SmartDashboard/drive to distance": "Command",
+      "/SmartDashboard/encoderToPosition": "PIDController"
+    },
+    "windows": {
+      "/SmartDashboard/Field": {
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  }
+}
