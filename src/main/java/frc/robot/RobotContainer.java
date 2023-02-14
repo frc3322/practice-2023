@@ -142,10 +142,10 @@ public class RobotContainer implements Loggable {
         .addConstraint(autoVoltageConstraint);
 
         ArrayList<Translation2d> waypoints = new ArrayList<Translation2d>();
-        waypoints.add(new Translation2d(0, 0.5));
+        waypoints.add(new Translation2d(1, 1));
 
     Trajectory tr = TrajectoryGenerator.generateTrajectory(new Pose2d(0, 0, new Rotation2d(0)), waypoints,
-        new Pose2d(0, 1, new Rotation2d(0)), config);
+        new Pose2d(2, 2, new Rotation2d(0)), config);
 
     drivetrain.putTrajOnFieldWidget(tr, "trajectory");
 
