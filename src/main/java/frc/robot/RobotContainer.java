@@ -14,6 +14,7 @@ import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.Logger;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
@@ -28,11 +29,13 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -147,7 +150,17 @@ public class RobotContainer implements Loggable {
     Trajectory tr = TrajectoryGenerator.generateTrajectory(new Pose2d(0, 0, new Rotation2d(0)), waypoints,
         new Pose2d(2, 2, new Rotation2d(0)), config);
 
-    drivetrain.putTrajOnFieldWidget(tr, "trajectory");
+        final Trajectory altInitToWallToShoot =
+        TrajectoryGenerator.generateTrajectory(
+          new Pose2d(new Translation2d(8.316, 5.792), new Rotation2d(Units.degreesToRadians(113.8))),
+            List.of(
+                new Translation2d(8.6, 7.6),
+                new Translation2d(10.5, 7.73),
+                new Translation2d(13, 7.6)),
+             new Pose2d(new Translation2d(8.316, 5.792), new Rotation2d(Units.degreesToRadians(113.8))),
+            config);
+
+    drivetrain.putTrajOnFieldWidget(altInitToWallToShoot, "altinitwalltoshoot");
 
     BiConsumer<Double, Double> bc = (l, r) -> {
       drivetrain.tankDriveVolts(l, r);
@@ -158,7 +171,7 @@ public class RobotContainer implements Loggable {
     final PIDController rightramsete = new PIDController(SysID.kp, 0, 0);
     final PIDController leftramsete = new PIDController(SysID.kp, 0, 0);
 
-    RamseteCommand ramseteCommand = new RamseteCommand(tr,
+    RamseteCommand ramseteCommand = new RamseteCommand(altInitToWallToShoot,
         sup,
         new RamseteController(SysID.kRamseteB, SysID.kRamseteZeta),
         new SimpleMotorFeedforward(
@@ -173,10 +186,13 @@ public class RobotContainer implements Loggable {
         drivetrain);
 
     // Reset odometry to the starting pose of the trajectory.
-    drivetrain.resetOdometry(tr.getInitialPose());
+    drivetrain.resetOdometry(altInitToWallToShoot.getInitialPose());
 
     // Run path following command, then stop at the end.
-    return ramseteCommand;
+    return new SequentialCommandGroup(
+      // new InstantCommand(() -> resetOdometry(trajectory.getInitialPose())),
+      ramseteCommand, new InstantCommand(() -> drivetrain.tankDriveVolts(0, 0)));
+};
 
   }
-}
+
