@@ -12,6 +12,14 @@
     },
     "windows": {
       "/SmartDashboard/Field": {
+        "bottom": 544,
+        "height": 8.013679504394531,
+        "image": "/Users/simrankheterpal/Desktop/2023-field.png",
+        "left": 46,
+        "right": 1088,
+        "top": 36,
+        "units": "feet",
+        "width": 16.541748046875,
         "window": {
           "visible": true
         }
