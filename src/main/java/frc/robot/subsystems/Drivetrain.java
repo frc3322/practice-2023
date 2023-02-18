@@ -6,65 +6,38 @@
 package frc.robot.subsystems;
 
 
-import java.util.function.DoubleSupplier;
-
-
 import com.kauailabs.navx.frc.AHRS;
-
-
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.SPI;
-
-
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
+import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.hal.SimDouble;
-import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.RamseteController;
-import com.revrobotics.RelativeEncoder;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.NetworkTableValue;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
-import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotGearing;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotMotor;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotWheelSize;
+import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
-import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-
-import frc.robot.Constants;
-import frc.robot.Constants.SysID;
-import frc.robot.commands.TurnToAngle;
+import frc.robot.Constants.*;
+import frc.robot.RelativeEncoderSim;
 import io.github.oblarg.oblog.Loggable;
-import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
 
 
@@ -74,10 +47,10 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   private Field2d fieldSim = new Field2d();
 
 
-  public final CANSparkMax motorFR = new CANSparkMax(Constants.CAN.FR, MotorType.kBrushless);
-  public final CANSparkMax motorFL = new CANSparkMax(Constants.CAN.FL, MotorType.kBrushless);
-  public final CANSparkMax motorBR = new CANSparkMax(Constants.CAN.BR, MotorType.kBrushless);
-  public final CANSparkMax motorBL = new CANSparkMax(Constants.CAN.BL, MotorType.kBrushless);
+  public final CANSparkMax motorFR = new CANSparkMax(CAN.FR, MotorType.kBrushless);
+  public final CANSparkMax motorFL = new CANSparkMax(CAN.FL, MotorType.kBrushless);
+  public final CANSparkMax motorBR = new CANSparkMax(CAN.BR, MotorType.kBrushless);
+  public final CANSparkMax motorBL = new CANSparkMax(CAN.BL, MotorType.kBrushless);
  
   public final RelativeEncoder FLEncoder = motorFL.getEncoder();
   public final RelativeEncoder FREncoder = motorFR.getEncoder();
@@ -86,11 +59,13 @@ public class Drivetrain extends SubsystemBase implements Loggable {
 
 
   private DifferentialDrivetrainSim drivetrainSimulator;
-  private EncoderSim FLEncoderSim = new EncoderSim((Encoder) FLEncoder);
-  private EncoderSim FREncoderSim = new EncoderSim((Encoder) FREncoder);
-  private EncoderSim BLEncoderSim = new EncoderSim((Encoder) BLEncoder);
-  private EncoderSim BREncoderSim = new EncoderSim((Encoder) BREncoder);
-  private SimDouble gyroSim;
+  private RelativeEncoderSim FLEncoderSim = new RelativeEncoderSim(false, CAN.FL);
+  private RelativeEncoderSim FREncoderSim = new RelativeEncoderSim(false, CAN.FR);
+  private RelativeEncoderSim BLEncoderSim = new RelativeEncoderSim(false, CAN.BL);
+  private RelativeEncoderSim BREncoderSim = new RelativeEncoderSim(false, CAN.BR);
+  private SimDouble gyroSim = new SimDouble(
+    SimDeviceDataJNI.getSimValueHandle(
+        SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]"), "Yaw"));;
 
 
   private final DifferentialDrive robotDrive = new DifferentialDrive(motorFL, motorFR);
@@ -266,11 +241,14 @@ public class Drivetrain extends SubsystemBase implements Loggable {
     //Update the simulation
     driveSim.update(0.02);
     //Update the sensors
-    FLEncoderSim.setDistance(driveSim.getLeftPositionMeters());
-    FLEncoderSim.setRate(driveSim.getLeftVelocityMetersPerSecond());
-    FREncoderSim.setDistance(driveSim.getRightPositionMeters());
-    FREncoderSim.setRate(driveSim.getRightVelocityMetersPerSecond());
+    FLEncoderSim.setPosition(driveSim.getLeftPositionMeters());
+    FLEncoderSim.setVelocity(driveSim.getLeftVelocityMetersPerSecond());
+    FREncoderSim.setPosition(driveSim.getRightPositionMeters());
+    FREncoderSim.setVelocity(driveSim.getRightVelocityMetersPerSecond());
     gyroSim.set(driveSim.getHeading().getDegrees());
+
+   
+
   }
 
 

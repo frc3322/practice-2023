@@ -1,6 +1,10 @@
 {
+  "Docking": {
+    "Data": []
+  },
   "MainWindow": {
     "GLOBAL": {
+      "fps": "120",
       "height": "720",
       "maximized": "0",
       "style": "0",
@@ -13,12 +17,12 @@
   "Window": {
     "###/SmartDashboard/Field": {
       "Collapsed": "0",
-      "Pos": "438,101",
-      "Size": "393,432"
+      "Pos": "575,99",
+      "Size": "823,556"
     },
     "###FMS": {
       "Collapsed": "0",
-      "Pos": "278,528",
+      "Pos": "150,491",
       "Size": "283,146"
     },
     "###Joysticks": {
@@ -33,7 +37,7 @@
     },
     "###NetworkTables": {
       "Collapsed": "0",
-      "Pos": "250,277",
+      "Pos": "156,277",
       "Size": "750,185"
     },
     "###Other Devices": {
@@ -43,7 +47,7 @@
     },
     "###System Joysticks": {
       "Collapsed": "0",
-      "Pos": "5,350",
+      "Pos": "28,321",
       "Size": "192,218"
     },
     "###Timing": {
