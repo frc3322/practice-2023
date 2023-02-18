@@ -66,6 +66,28 @@ public class RobotContainer {
     ));
 
     driverController.b().whileTrue(new InstantCommand(
+        () -> {
+          drivetrain.setPipeline(1);
+        }));
+
+    driverController.y().onTrue(
+        new TurnToAngle(90, drivetrain)
+            .withTimeout(3));
+    driverController.rightBumper().onTrue(
+        new DriveToDistance(20, drivetrain)
+            .withTimeout(5));
+    driverController.leftBumper().onTrue(new InstantCommand(
+        () -> {
+          drivetrain.resetEncoders();
+        }));
+    driverController.x().whileTrue(new StartEndCommand(
+        () -> {
+          testMotor.setPower(0.02);
+        },
+        () -> {
+          testMotor.setPower(0);
+        }, testMotor));
+    driverController.povDown().onTrue(new InstantCommand(
       () -> {
         drivetrain.setPipeline(1);
       }

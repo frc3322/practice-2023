@@ -31,5 +31,51 @@ public final class Constants {
     public static final int FR = 3;
     public static final int BL = 4;
     public static final int BR = 11;
+<<<<<<< Updated upstream
+=======
+    //test Motor
+    public static final int testMotor = 8;
+  }
+  public static final class PWM {
+    public static final int S1 = 8;
+    public static final int S2 = 9;
+  }
+
+  public static final class SysID{
+    //public static final double ks = 0.31008;
+    public static final double ks = 0.17373;
+    //public static final double kv = 4.9366;
+    public static final double kv = 1.16165;
+    //public static final double ka = 7.5013;
+    public static final double ka = 0.23456;
+
+    public static final double kp = 0.00018;
+
+    public static final double MaxSpeed = 0.1;
+    public static final double MaxAcceleration = 0.1;
+
+    public static final double trackwidth = .9372;
+    public static final DifferentialDriveKinematics kDriveKinematics =
+    new DifferentialDriveKinematics(trackwidth);
+
+    public static final double kRamseteB = 2;
+    public static final double kRamseteZeta = 0.7;
+  }
+
+  public static final class I2CConst{
+    public static final int COMMAND_REGISTER_BIT = 0x80;
+    public static final int MULTI_BYTE_BIT= 0x20;
+
+    //clear byte address
+    public static final int CDATA_REGISTER = 0x14;
+    //red byte address
+    public static final int RDATA_REGISTER = 0x16;
+    //green byte address
+    public static final int GDATA_REGISTER = 0x18;
+    //blue byte address
+    public static final int BDATA_REGISTER = 0x1A;
+    //proximity byte adress
+    public static final int PDATA_REGISTER = 0x1C;
+>>>>>>> Stashed changes
   }
 }
