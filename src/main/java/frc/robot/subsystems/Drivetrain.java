@@ -75,11 +75,11 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   public final RelativeEncoder BREncoder = motorBR.getEncoder();
 
   private DifferentialDrivetrainSim drivetrainSimulator;
-  private EncoderSim FLEncoderSim = new EncoderSim((Encoder) FLEncoder);
-  private EncoderSim FREncoderSim = new EncoderSim((Encoder) FREncoder);
-  private EncoderSim BLEncoderSim = new EncoderSim((Encoder) BLEncoder);
-  private EncoderSim BREncoderSim = new EncoderSim((Encoder) BREncoder);
-  private SimDouble gyroSim;
+  // private EncoderSim FLEncoderSim = new EncoderSim((Encoder) FLEncoder);
+  // private EncoderSim FREncoderSim = new EncoderSim((Encoder) FREncoder);
+  // private EncoderSim BLEncoderSim = new EncoderSim((Encoder) BLEncoder);
+  // private EncoderSim BREncoderSim = new EncoderSim((Encoder) BREncoder);
+  // private SimDouble gyroSim;
 
   private final DifferentialDrive robotDrive = new DifferentialDrive(motorFL, motorFR);
   private DifferentialDrivetrainSim driveSim = DifferentialDrivetrainSim.createKitbotSim(
