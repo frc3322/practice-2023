@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -16,13 +18,20 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
-
   public static final class DriveConstants {
-    public static final double kTurnP = 0.001;
+    public static final double kTurnP = 0.03;
     public static final double kTurnI = 0;
-    public static final double kTurnD = 0;
-    public static final double kTurnToleranceDeg = 5;
+    public static final double kTurnD = 0.0075;
+    public static final double kTurnToleranceDeg = 0.05;
     public static final double kTurnRateToleranceDegPerS = 10;
+
+    public static final double kDriveP = 0.03;
+    public static final double kDriveI = 0;
+    public static final double kDriveD = 0.0075;
+    public static final double kDriveToleranceDeg = 0.05;
+    public static final double kDriveRateToleranceDegPerS = 10;
+
+    public static final double encoderTicsPerFoot = 6.84;
   }
 
   public static final class CAN {
@@ -31,8 +40,6 @@ public final class Constants {
     public static final int FR = 3;
     public static final int BL = 4;
     public static final int BR = 11;
-<<<<<<< Updated upstream
-=======
     //test Motor
     public static final int testMotor = 8;
   }
@@ -76,6 +83,5 @@ public final class Constants {
     public static final int BDATA_REGISTER = 0x1A;
     //proximity byte adress
     public static final int PDATA_REGISTER = 0x1C;
->>>>>>> Stashed changes
   }
 }

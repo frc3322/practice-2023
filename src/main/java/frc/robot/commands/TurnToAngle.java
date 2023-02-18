@@ -4,37 +4,26 @@
 
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
-import io.github.oblarg.oblog.Loggable;
-import io.github.oblarg.oblog.annotations.Config;
 
 /** A command that will turn the robot to the specified angle. */
-public class TurnToAngle extends PIDCommand implements Loggable{
+public class TurnToAngle extends PIDCommand {
   /**
    * Turns to robot to the specified angle.
    *
    * @param targetAngleDegrees The angle to turn to
    * @param drive The drive subsystem to use
-   * 
    */
-
-    static double p;
-    static double i;
-    static double d;
-
-   @Config
-   public void tuneTTA(double newP, double newI, double newD){
-    p = newP;
-    i = newI;
-    d = newD;
-   }
-
+  
   public TurnToAngle(double targetAngleDegrees, Drivetrain drive) {
     super(
-        new PIDController(p, i, d),
+      new PIDController(DriveConstants.kTurnP, DriveConstants.kTurnI, DriveConstants.kTurnD),
         // Close loop on heading
         drive::getYaw,
         // Set reference to target
@@ -43,9 +32,13 @@ public class TurnToAngle extends PIDCommand implements Loggable{
         output -> drive.drive(0, output),
         // Require the drive
         drive);
+    
+    SmartDashboard.putData("Angle Controller", getController());
+    
 
     // Set the controller to be continuous (because it is an angle controller)
     getController().enableContinuousInput(-180, 180);
+    
     // Set the controller tolerance - the delta tolerance ensures the robot is stationary at the
     // setpoint before it is considered as having reached the reference
     getController()
