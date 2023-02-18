@@ -2,6 +2,12 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/LiveWindow/Ungrouped/DifferentialDrive[1]": "DifferentialDrive",
+      "/LiveWindow/Ungrouped/PIDController[11]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[12]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
       "/SmartDashboard/Angle Controller": "PIDController",
       "/SmartDashboard/Distance Controller": "PIDController",
       "/SmartDashboard/Encoder To Position": "Command",
@@ -12,6 +18,14 @@
     },
     "windows": {
       "/SmartDashboard/Field": {
+        "Robot": {
+          "style": "Box/Image"
+        },
+        "altinitwalltoshoot": {
+          "arrowSize": 58,
+          "arrowWeight": 1.0,
+          "style": "Track"
+        },
         "bottom": 544,
         "height": 8.013679504394531,
         "image": "/Users/simrankheterpal/Desktop/2023-field.png",

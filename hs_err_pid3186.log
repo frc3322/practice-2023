@@ -1,0 +1,45 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x0000000132ddf21b, pid=3186, tid=259
+#
+# JRE version: OpenJDK Runtime Environment Temurin-11.0.13+8 (11.0.13+8) (build 11.0.13+8)
+# Java VM: OpenJDK 64-Bit Server VM Temurin-11.0.13+8 (11.0.13+8, mixed mode, tiered, compressed oops, g1 gc, bsd-amd64)
+# Problematic frame:
+# C  [libhalsim_gui.dylib+0x1e21b]  std::__1::__function::__func<halsimgui::NetworkTablesSimGui::Initialize()::$_0, std::__1::allocator<halsimgui::NetworkTablesSimGui::Initialize()::$_0>, void ()>::operator()()+0xb
+#
+# No core dump will be written. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+# If you would like to submit a bug report, please visit:
+#   https://github.com/adoptium/adoptium-support/issues
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: -agentlib:jdwp=transport=dt_socket,server=n,suspend=y,address=localhost:49371 -Djava.library.path=/Users/simrankheterpal/Documents/School and Clubs/Skyline Robotics/practice-2023/build/jni/release frc.robot.Main
+
+Host: MacBookAir9,1 x86_64 1100 MHz, 8 cores, 8G, Darwin 20.6.0
+Time: Sat Feb 18 15:03:48 2023 EST elapsed time: 43.407359 seconds (0d 0h 0m 43s)
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007fafda810800):  JavaThread "main" [_thread_in_native, id=259, stack(0x00007ffee2850000,0x00007ffee3050000)]
+
+Stack: [0x00007ffee2850000,0x00007ffee3050000],  sp=0x00007ffee304ca70,  free space=8178k
+Native frames: (J=compiled Java code, A=aot compiled Java code, j=interpreted, Vv=VM code, C=native code)
+C  [libhalsim_gui.dylib+0x1e21b]  std::__1::__function::__func<halsimgui::NetworkTablesSimGui::Initialize()::$_0, std::__1::allocator<halsimgui::NetworkTablesSimGui::Initialize()::$_0>, void ()>::operator()()+0xb
+C  [libhalsim_gui.dylib+0x87be5]  wpi::gui::CommonRenderFrame()+0x75
+C  [libhalsim_gui.dylib+0x9b4d6]  wpi::gui::PlatformRenderFrame()+0x326
+C  [libhalsim_gui.dylib+0x87a67]  wpi::gui::Main()+0x147
+C  [libhalsim_gui.dylib+0x1d9c9]  HALSIM_InitExtension::$_2::__invoke(void*)+0x9
+j  edu.wpi.first.hal.HAL.runMain()V+0
+j  edu.wpi.first.wpilibj.RobotBase.startRobot(Ljava/util/function/Supplier;)V+86
+j  frc.robot.Main.main([Ljava/lang/String;)V+5
+v  ~StubRoutines::call_stub
+V  [libjvm.dylib+0x3b5a80]  JavaCalls::call_helper(JavaValue*, methodHandle const&, JavaCallArguments*, Thread*)+0x1fe
+V  [libjvm.dylib+0x3fb101]  jni_invoke_static(JNIEnv_*, JavaValue*, _jobject*, JNICallType, _jmethodID*, JNI_ArgumentPusher*, Thread*)+0x10a
+V  [libjvm.dylib+0x3fe9e6]  jni_CallStaticVoidMethod+0x1d2
+C  [libjli.dylib+0x4b1d]  JavaMain+0xab0
+C  [libjli.dylib+0x7065]  __JVMInit_block_invoke+0x4b

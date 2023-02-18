@@ -168,7 +168,25 @@ public class RobotContainer implements Loggable {
              new Pose2d(new Translation2d(8.316, 5.792), new Rotation2d(Units.degreesToRadians(113.8))),
             config);
 
-    drivetrain.putTrajOnFieldWidget(altInitToWallToShoot, "altinitwalltoshoot");
+    
+    ArrayList<Translation2d> listy = new ArrayList<Translation2d>();
+   // waypoints.add(new Translation2d(33.059, 17.483));
+    listy.add(new Translation2d(27.414, 18.731));
+    listy.add(new Translation2d(26.915, 22.039));
+    //waypoints.add(new Translation2d(28.523, 25.137));
+    Trajectory exampleTrajectory =
+     TrajectoryGenerator.generateTrajectory(
+         // Start at the origin facing the +X direction
+         new Pose2d(0, 0, new Rotation2d(0)),
+         // Pass through these two interior waypoints, making an 's' curve path
+         List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+         // End 3 meters straight ahead of where we started, facing forward
+         new Pose2d(3, 0, new Rotation2d(0)),
+         // Pass config
+         config);
+
+
+    drivetrain.putTrajOnFieldWidget(exampleTrajectory, "simrancurveytraj");
 
     BiConsumer<Double, Double> bc = (l, r) -> {
       drivetrain.tankDriveVolts(l, r);
@@ -179,7 +197,7 @@ public class RobotContainer implements Loggable {
     final PIDController rightramsete = new PIDController(SysID.kp, 0, 0);
     final PIDController leftramsete = new PIDController(SysID.kp, 0, 0);
 
-    RamseteCommand ramseteCommand = new RamseteCommand(altInitToWallToShoot,
+    RamseteCommand ramseteCommand = new RamseteCommand(exampleTrajectory,
         sup,
         new RamseteController(SysID.kRamseteB, SysID.kRamseteZeta),
         new SimpleMotorFeedforward(
@@ -194,7 +212,7 @@ public class RobotContainer implements Loggable {
         drivetrain);
 
     // Reset odometry to the starting pose of the trajectory.
-    drivetrain.resetOdometry(altInitToWallToShoot.getInitialPose());
+    drivetrain.resetOdometry(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
     return new SequentialCommandGroup(

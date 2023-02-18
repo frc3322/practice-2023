@@ -235,7 +235,7 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
-    fieldSim.setRobotPose(getPose2d());
+    
     //Set the inputs to the system
     driveSim.setInputs(motorFL.get(), motorFL.get());
     //Update the simulation
@@ -247,7 +247,7 @@ public class Drivetrain extends SubsystemBase implements Loggable {
     FREncoderSim.setVelocity(driveSim.getRightVelocityMetersPerSecond());
     gyroSim.set(driveSim.getHeading().getDegrees());
 
-   
+    fieldSim.setRobotPose(getPose2d());
 
   }
 
