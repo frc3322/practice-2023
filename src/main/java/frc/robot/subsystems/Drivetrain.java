@@ -58,6 +58,8 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   public final RelativeEncoder BREncoder = motorBR.getEncoder();
 
 
+
+
   private DifferentialDrivetrainSim drivetrainSimulator;
   private RelativeEncoderSim FLEncoderSim = new RelativeEncoderSim(false, CAN.FL);
   private RelativeEncoderSim FREncoderSim = new RelativeEncoderSim(false, CAN.FR);
@@ -171,10 +173,10 @@ public class Drivetrain extends SubsystemBase implements Loggable {
 
 
 
-    motorFR.setIdleMode(IdleMode.kCoast);
-    motorFL.setIdleMode(IdleMode.kCoast);
-    motorBR.setIdleMode(IdleMode.kCoast);
-    motorBL.setIdleMode(IdleMode.kCoast);
+    motorFR.setIdleMode(IdleMode.kBrake);
+    motorFL.setIdleMode(IdleMode.kBrake);
+    motorBR.setIdleMode(IdleMode.kBrake);
+    motorBL.setIdleMode(IdleMode.kBrake);
 
 
     motorFR.burnFlash();

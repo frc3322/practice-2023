@@ -141,8 +141,9 @@ public class RobotContainer implements Loggable {
   }
 
   public Command getAutonomousCommand() {
+  
     var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
-        new SimpleMotorFeedforward(SysID.ks, SysID.kv, SysID.ka), SysID.kDriveKinematics, 7);
+        new SimpleMotorFeedforward(SysID.ks, SysID.kv, SysID.ka), SysID.kDriveKinematics, 3);
 
     TrajectoryConfig config = new TrajectoryConfig(
         SysID.MaxSpeed,

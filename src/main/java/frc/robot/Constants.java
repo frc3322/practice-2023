@@ -49,15 +49,16 @@ public final class Constants {
   }
 
   public static final class SysID{
+    public static final double trackwidth = .9372;
     //public static final double ks = 0.31008;
     //public static final double ks = 0.1474;
     public static final double ks = 0.17373;
     //public static final double kv = 4.9366;
     //public static final double kv = 2.4;
-    public static final double kv = 3.3764;
+    public static final double kv = 3.3764 * .5 * trackwidth;
     //public static final double ka = 7.5013;
     //public static final double ka = 0.68337;
-    public static final double ka = 0.48994;
+    public static final double ka = 0.48994 * .5 * trackwidth;
 
     //public static final double kp = 0.00018;
     public static final double kp = 0.00052787;
@@ -65,7 +66,7 @@ public final class Constants {
     public static final double MaxSpeed = 0.1;
     public static final double MaxAcceleration = 0.1;
 
-    public static final double trackwidth = .9372;
+   
     public static final DifferentialDriveKinematics kDriveKinematics =
     new DifferentialDriveKinematics(trackwidth);
 
