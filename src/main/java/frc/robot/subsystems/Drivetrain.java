@@ -170,6 +170,14 @@ public class Drivetrain extends SubsystemBase implements Loggable {
     SmartDashboard.putData("drive to distance", getDriveEncDistanceCommandFL(0));
    
 
+    FLEncoder.setPositionConversionFactor(0.4788/10.75);
+    FREncoder.setPositionConversionFactor(0.4788/10.75);
+    //meters per rotation, gear ratio
+    
+    FLEncoder.setVelocityConversionFactor(0.4788/10.75/60);
+    FREncoder.setVelocityConversionFactor(0.4788/10.75/60);
+    //meters per wheel rotation, gearing reduction, divide by 60 for per second
+
 
 
 
@@ -293,11 +301,12 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   }
 
 
-  public void resetEncoders() {
+  public double resetEncoders() {
     FREncoder.setPosition(0);
     FLEncoder.setPosition(0);
     BREncoder.setPosition(0);
     BLEncoder.setPosition(0);
+    return 0.0;
   }
 
 

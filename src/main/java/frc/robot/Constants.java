@@ -25,11 +25,11 @@ public final class Constants {
     public static final double kTurnToleranceDeg = 0.05;
     public static final double kTurnRateToleranceDegPerS = 10;
 
-    public static final double kDriveP = 0.03;
+    public static final double kDriveP = 0.03; //0.03
     public static final double kDriveI = 0;
-    public static final double kDriveD = 0.0075;
+    public static final double kDriveD = 0;//.0075;
     public static final double kDriveToleranceDeg = 0.05;
-    public static final double kDriveRateToleranceDegPerS = 10;
+    public static final double kDriveRateToleranceMetersPerS = .01;
 
     public static final double encoderTicsPerFoot = 6.84;
   }

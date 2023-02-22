@@ -11,34 +11,40 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
+import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Log;
 
 /** A command that will turn the robot to the specified angle. */
-public class DriveToDistance extends PIDCommand {
+public class DriveToDistance extends PIDCommand implements Loggable {
+
+  @Log double realSetpoint = 0;
   
   public DriveToDistance(double targetDistance, Drivetrain drive) {
 
     super(
       new PIDController(DriveConstants.kDriveP, DriveConstants.kDriveI, DriveConstants.kDriveD),
-        // Close loop on heading
-        drive::getDistance,
-        // Set reference to target
-        drive.getDistance() + (targetDistance * DriveConstants.encoderTicsPerFoot),
-        // Pipe output to turn robot
-        output -> drive.updateOutputLog(output),
-        // Require the drive
-        drive);
-
+      // Close loop on heading
+      drive::getDistance,
+      // Set reference to target
+      targetDistance, //drive.getDistance() + (targetDistance), //* DriveConstants.encoderTicsPerFoot),
+      // Pipe output to turn robot
+      output -> drive.drive(output, 0),
+      // Require the drive
+      drive);
+    
     SmartDashboard.putData("Distance Controller", getController());
+
+    realSetpoint = targetDistance;
     
 
     // Set the controller to be continuous
     // DO NOT REMOVE THIS LINE //
-    getController().enableContinuousInput(0, 60);
+    //getController().enableContinuousInput(0, 60);
     
     // Set the controller tolerance - the delta tolerance ensures the robot is stationary at the
     // setpoint before it is considered as having reached the reference
     getController()
-        .setTolerance(DriveConstants.kDriveToleranceDeg, DriveConstants.kDriveRateToleranceDegPerS);
+        .setTolerance(DriveConstants.kDriveToleranceDeg, DriveConstants.kDriveRateToleranceMetersPerS);
   }
 
   @Override
