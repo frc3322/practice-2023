@@ -5,6 +5,8 @@
 package frc.robot;
 
 import frc.robot.Constants.SysID;
+import frc.robot.commands.AutonBalance;
+import frc.robot.commands.AutonBalanceCommand;
 import frc.robot.commands.DriveToDistance;
 import frc.robot.commands.TurnToAngle;
 //import frc.robot.commands.TurnToAngle;
@@ -53,6 +55,7 @@ public class RobotContainer implements Loggable {
   // The robot's subsystems and commands are defined here...
   private final Drivetrain drivetrain = new Drivetrain();
   private final TestMotor testMotor = new TestMotor();
+  private final AutonBalance autonBalance = new AutonBalance();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driverController = new CommandXboxController(0);
@@ -141,84 +144,89 @@ public class RobotContainer implements Loggable {
   }
 
   public Command getAutonomousCommand() {
+    return  new AutonBalanceCommand(
+      autonBalance,
+      drivetrain::tankDriveVolts,
+      drivetrain
+    );
   
-    var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
-        new SimpleMotorFeedforward(SysID.ks, SysID.kv, SysID.ka), SysID.kDriveKinematics, 3);
+  //   var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
+  //       new SimpleMotorFeedforward(SysID.ks, SysID.kv, SysID.ka), SysID.kDriveKinematics, 3);
 
-    TrajectoryConfig config = new TrajectoryConfig(
-        SysID.MaxSpeed,
-        SysID.MaxAcceleration)
-        // Add kinematics to ensure max speed is actually obeyed
-        .setKinematics(SysID.kDriveKinematics)
-        // Apply the voltage constraint
-        .addConstraint(autoVoltageConstraint);
+  //   TrajectoryConfig config = new TrajectoryConfig(
+  //       SysID.MaxSpeed,
+  //       SysID.MaxAcceleration)
+  //       // Add kinematics to ensure max speed is actually obeyed
+  //       .setKinematics(SysID.kDriveKinematics)
+  //       // Apply the voltage constraint
+  //       .addConstraint(autoVoltageConstraint);
 
-        ArrayList<Translation2d> waypoints = new ArrayList<Translation2d>();
-        waypoints.add(new Translation2d(1, 1));
+  //       ArrayList<Translation2d> waypoints = new ArrayList<Translation2d>();
+  //       waypoints.add(new Translation2d(1, 1));
 
-    Trajectory tr = TrajectoryGenerator.generateTrajectory(new Pose2d(0, 0, new Rotation2d(0)), waypoints,
-        new Pose2d(2, 2, new Rotation2d(0)), config);
+  //   Trajectory tr = TrajectoryGenerator.generateTrajectory(new Pose2d(0, 0, new Rotation2d(0)), waypoints,
+  //       new Pose2d(2, 2, new Rotation2d(0)), config);
 
-        final Trajectory altInitToWallToShoot =
-        TrajectoryGenerator.generateTrajectory(
-          new Pose2d(new Translation2d(8.316, 5.792), new Rotation2d(Units.degreesToRadians(113.8))),
-            List.of(
-                new Translation2d(8.6, 7.6),
-                new Translation2d(10.5, 7.73),
-                new Translation2d(13, 7.6)),
-             new Pose2d(new Translation2d(8.316, 5.792), new Rotation2d(Units.degreesToRadians(113.8))),
-            config);
+  //       final Trajectory altInitToWallToShoot =
+  //       TrajectoryGenerator.generateTrajectory(
+  //         new Pose2d(new Translation2d(8.316, 5.792), new Rotation2d(Units.degreesToRadians(113.8))),
+  //           List.of(
+  //               new Translation2d(8.6, 7.6),
+  //               new Translation2d(10.5, 7.73),
+  //               new Translation2d(13, 7.6)),
+  //            new Pose2d(new Translation2d(8.316, 5.792), new Rotation2d(Units.degreesToRadians(113.8))),
+  //           config);
 
     
-    ArrayList<Translation2d> listy = new ArrayList<Translation2d>();
-   // waypoints.add(new Translation2d(33.059, 17.483));
-    listy.add(new Translation2d(27.414, 18.731));
-    listy.add(new Translation2d(26.915, 22.039));
-    //waypoints.add(new Translation2d(28.523, 25.137));
-    Trajectory exampleTrajectory =
-     TrajectoryGenerator.generateTrajectory(
-         // Start at the origin facing the +X direction
-         new Pose2d(0, 0, new Rotation2d(0)),
-         // Pass through these two interior waypoints, making an 's' curve path
-         List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-         // End 3 meters straight ahead of where we started, facing forward
-         new Pose2d(3, 0, new Rotation2d(0)),
-         // Pass config
-         config);
+  //   ArrayList<Translation2d> listy = new ArrayList<Translation2d>();
+  //  // waypoints.add(new Translation2d(33.059, 17.483));
+  //   listy.add(new Translation2d(27.414, 18.731));
+  //   listy.add(new Translation2d(26.915, 22.039));
+  //   //waypoints.add(new Translation2d(28.523, 25.137));
+  //   Trajectory exampleTrajectory =
+  //    TrajectoryGenerator.generateTrajectory(
+  //        // Start at the origin facing the +X direction
+  //        new Pose2d(0, 0, new Rotation2d(0)),
+  //        // Pass through these two interior waypoints, making an 's' curve path
+  //        List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+  //        // End 3 meters straight ahead of where we started, facing forward
+  //        new Pose2d(3, 0, new Rotation2d(0)),
+  //        // Pass config
+  //        config);
 
 
-    drivetrain.putTrajOnFieldWidget(exampleTrajectory, "simrancurveytraj");
+  //   drivetrain.putTrajOnFieldWidget(exampleTrajectory, "simrancurveytraj");
 
-    BiConsumer<Double, Double> bc = (l, r) -> {
-      drivetrain.tankDriveVolts(l, r);
-    };
-    Supplier<Pose2d> sup = () -> {
-      return drivetrain.getPose2d();
-    };
-    final PIDController rightramsete = new PIDController(SysID.kp, 0, 0);
-    final PIDController leftramsete = new PIDController(SysID.kp, 0, 0);
+  //   BiConsumer<Double, Double> bc = (l, r) -> {
+  //     drivetrain.tankDriveVolts(l, r);
+  //   };
+  //   Supplier<Pose2d> sup = () -> {
+  //     return drivetrain.getPose2d();
+  //   };
+  //   final PIDController rightramsete = new PIDController(SysID.kp, 0, 0);
+  //   final PIDController leftramsete = new PIDController(SysID.kp, 0, 0);
 
-    RamseteCommand ramseteCommand = new RamseteCommand(exampleTrajectory,
-        sup,
-        new RamseteController(SysID.kRamseteB, SysID.kRamseteZeta),
-        new SimpleMotorFeedforward(
-            SysID.ks,
-            SysID.kv,
-            SysID.ka),
-        SysID.kDriveKinematics,
-        drivetrain::getWheelSpeeds,
-        leftramsete,
-        rightramsete,
-        bc,
-        drivetrain);
+  //   RamseteCommand ramseteCommand = new RamseteCommand(exampleTrajectory,
+  //       sup,
+  //       new RamseteController(SysID.kRamseteB, SysID.kRamseteZeta),
+  //       new SimpleMotorFeedforward(
+  //           SysID.ks,
+  //           SysID.kv,
+  //           SysID.ka),
+  //       SysID.kDriveKinematics,
+  //       drivetrain::getWheelSpeeds,
+  //       leftramsete,
+  //       rightramsete,
+  //       bc,
+  //       drivetrain);
 
-    // Reset odometry to the starting pose of the trajectory.
-    drivetrain.resetOdometry(exampleTrajectory.getInitialPose());
+  //   // Reset odometry to the starting pose of the trajectory.
+  //   drivetrain.resetOdometry(exampleTrajectory.getInitialPose());
 
-    // Run path following command, then stop at the end.
-    return new SequentialCommandGroup(
-      // new InstantCommand(() -> resetOdometry(trajectory.getInitialPose())),
-      ramseteCommand, new InstantCommand(() -> drivetrain.tankDriveVolts(0, 0)));
+  //   // Run path following command, then stop at the end.
+  //   return new SequentialCommandGroup(
+  //     // new InstantCommand(() -> resetOdometry(trajectory.getInitialPose())),
+  //     ramseteCommand, new InstantCommand(() -> drivetrain.tankDriveVolts(0, 0)));
 };
 
   }
