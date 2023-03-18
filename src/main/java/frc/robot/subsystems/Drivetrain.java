@@ -36,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.*;
+import frc.robot.commands.AutonBalance;
 import frc.robot.RelativeEncoderSim;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
@@ -57,8 +58,8 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   public final RelativeEncoder BLEncoder = motorBL.getEncoder();
   public final RelativeEncoder BREncoder = motorBR.getEncoder();
 
-
-
+  private final AutonBalance autonBalance = new AutonBalance();
+  
 
   private DifferentialDrivetrainSim drivetrainSimulator;
   private RelativeEncoderSim FLEncoderSim = new RelativeEncoderSim(false, CAN.FL);
@@ -101,7 +102,12 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   //@Log double[] targetPose_robotSpace;
   // Array of the robot in the coordinate system of the target apriltag (apriltag perspective of robot)
  // @Log double[] botPose_targetSpace;
-  // Create gyro
+  
+  @Log private double XLPitch = 0;
+  @Log private double XLRoll = 0;
+  @Log private double XLTilt = 0;
+
+ // Create gyro
 
 
   private final AHRS gyro = new AHRS(SPI.Port.kMXP);
@@ -200,6 +206,11 @@ public class Drivetrain extends SubsystemBase implements Loggable {
     pitch = getPitch();
     roll = getRoll();
     yaw = getYaw();
+
+    XLPitch = autonBalance.getPitch();
+    XLRoll = autonBalance.getRoll();
+    XLTilt = autonBalance.getTilt();
+
 
 
     FLPower = motorFL.getBusVoltage();
@@ -368,6 +379,8 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   public void tankDriveVolts(double left, double right){
     motorFL.setVoltage(left);
     motorFR.setVoltage(right);
+
+    robotDrive.feed();
   }
 
 
@@ -385,6 +398,7 @@ public class Drivetrain extends SubsystemBase implements Loggable {
   // public Command getAuto(){
    
   // }
+  
 }
 
 

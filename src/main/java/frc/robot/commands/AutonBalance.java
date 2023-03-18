@@ -8,10 +8,12 @@ package frc.robot.commands;
 
 
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
+import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Log;
 
-public class AutonBalance {
+public class AutonBalance implements Loggable{
     private BuiltInAccelerometer mRioAccel;
-    private int state;
+    @Log private int state;
     private int debounceCount;
     private double robotSpeedSlow;
     private double robotSpeedFast;
@@ -31,26 +33,26 @@ public class AutonBalance {
          * CONFIG *
          **********/
         // Speed the robot drived while scoring/approaching station, default = 0.4
-        robotSpeedFast = 0.4;
+        robotSpeedFast = 2;
 
         // Speed the robot drives while balancing itself on the charge station.
         // Should be roughly half the fast speed, to make the robot more accurate,
         // default = 0.2
-        robotSpeedSlow = 0.2;
+        robotSpeedSlow = .8;
 
         // Angle where the robot knows it is on the charge station, default = 13.0
-        onChargeStationDegree = 13.0;
+        onChargeStationDegree = 105.0;
 
         // Angle where the robot can assume it is level on the charging station
         // Used for exiting the drive forward sequence as well as for auto balancing,
         // default = 6.0
-        levelDegree = 6.0;
+        levelDegree = 85.0;
 
         // Amount of time a sensor condition needs to be met before changing states in
         // seconds
         // Reduces the impact of sensor noice, but too high can make the auto run
         // slower, default = 0.2
-        debounceTime = 0.2;
+        debounceTime = 0.3;
 
         // Amount of time to drive towards to scoring target when trying to bump the
         // game piece off
@@ -66,13 +68,9 @@ public class AutonBalance {
 
     }
 
-    public boolean isBalanced(){
-        return state == 4;
-    }
-
     public double getPitch() {
         return Math.atan2((-mRioAccel.getX()),
-                Math.sqrt(mRioAccel.getY() * mRioAccel.getY() + mRioAccel.getZ() * mRioAccel.getZ())) * 57.3;
+                Math.sqrt(mRioAccel.getZ() * mRioAccel.getZ() + mRioAccel.getY() * mRioAccel.getY())) * 57.3;
     }
 
     public double getRoll() {

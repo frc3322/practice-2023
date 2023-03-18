@@ -145,7 +145,7 @@ public class RobotContainer implements Loggable {
 
   public Command getAutonomousCommand() {
     return  new AutonBalanceCommand(
-      autonBalance,
+      drivetrain,
       drivetrain::tankDriveVolts,
       drivetrain
     );
