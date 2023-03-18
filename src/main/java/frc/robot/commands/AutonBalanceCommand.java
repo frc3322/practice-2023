@@ -8,8 +8,6 @@ package frc.robot.commands;
 
 import java.util.function.BiConsumer;
 
-import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.Drivetrain;
@@ -71,8 +69,8 @@ public class AutonBalanceCommand extends CommandBase implements Loggable{
     // slower, default = 0.2
     debounceTime = 0.3;
     
-    this.drivetrain = requireNonNullParam(drivetrain, "Drivetrain", "AutonBalanceCommand");
-    this.output = requireNonNullParam(outputVolts, "outputVolts", "AutonBalanceCommand");
+    this.drivetrain = drivetrain;
+    this.output = outputVolts;
     
     addRequirements(reqirements);
   }
